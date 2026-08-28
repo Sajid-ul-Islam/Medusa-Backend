@@ -1,17 +1,39 @@
 const express = require("express")
 const { GracefulShutdownServer } = require("medusa-core-utils")
-
 const loaders = require("@medusajs/medusa/dist/loaders/index").default
+const { getAdminPortalHTML } = require("./admin-portal")
 
-;(async() => {
+;(async () => {
   async function start() {
     const app = express()
     const directory = process.cwd()
 
+    // 1. Health check endpoint
+    app.get("/health", (req, res) => {
+      res.status(200).json({
+        status: "ok",
+        engine: "medusa",
+        database: "supabase-postgresql",
+        timestamp: new Date().toISOString(),
+      })
+    })
+
+    // 2. Direct embedded Admin Portal served on Render root & /admin
+    app.get("/", (req, res, next) => {
+      if (req.headers.accept && req.headers.accept.includes("text/html")) {
+        return res.send(getAdminPortalHTML())
+      }
+      next()
+    })
+
+    app.get(["/admin", "/app", "/admin/login"], (req, res) => {
+      res.send(getAdminPortalHTML())
+    })
+
     try {
       const { container } = await loaders({
         directory,
-        expressApp: app
+        expressApp: app,
       })
       const configModule = container.resolve("configModule")
       const port = process.env.PORT ?? configModule.projectConfig.port ?? 9000
@@ -22,6 +44,7 @@ const loaders = require("@medusajs/medusa/dist/loaders/index").default
             return
           }
           console.log(`Server is ready on port: ${port}`)
+          console.log(`Admin Portal available at: http://localhost:${port}/admin`)
         })
       )
 

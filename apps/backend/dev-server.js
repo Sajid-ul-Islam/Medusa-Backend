@@ -4,9 +4,21 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const PORT = process.env.PORT || 9000;
+const { getAdminPortalHTML } = require("./admin-portal");
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(bodyParser.json());
+
+app.get(["/admin", "/app", "/admin/login"], (req, res) => {
+  res.send(getAdminPortalHTML());
+});
+
+app.get("/", (req, res, next) => {
+  if (req.headers.accept && req.headers.accept.includes("text/html")) {
+    return res.send(getAdminPortalHTML());
+  }
+  next();
+});
 
 // In-Memory Database / Mock Store
 let publishers = [
