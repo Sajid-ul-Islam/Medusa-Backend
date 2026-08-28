@@ -33,8 +33,6 @@ const DEFAULT_STORE_CORS =
 const DEFAULT_AUTH_CORS =
   process.env.AUTH_CORS ||
   "http://localhost:7000,http://localhost:7001,http://localhost:9000,http://localhost:3000";
-const DEFAULT_DATABASE_URL =
-  process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
 const DEFAULT_REDIS_URL = process.env.REDIS_URL || "";
 
 // Default plugin configurations
@@ -82,6 +80,20 @@ if (process.env.REDIS_URL) {
   };
 }
 
+// Determine Database Configuration (PostgreSQL / Supabase vs SQLite)
+const hasPostgres =
+  process.env.DATABASE_URL &&
+  process.env.DATABASE_URL.startsWith("postgres") &&
+  !process.env.USE_SQLITE;
+
+const requiresSsl =
+  process.env.DATABASE_URL &&
+  (process.env.DATABASE_URL.includes("supabase.co") ||
+    process.env.DATABASE_URL.includes("supabase.com") ||
+    process.env.DATABASE_URL.includes("neon.tech") ||
+    process.env.DATABASE_URL.includes("sslmode=require") ||
+    process.env.NODE_ENV === "production");
+
 // Project configuration
 const projectConfig = {
   jwt_secret: process.env.JWT_SECRET || "supersecret",
@@ -89,8 +101,16 @@ const projectConfig = {
   store_cors: process.env.STORE_CORS || DEFAULT_STORE_CORS,
   admin_cors: process.env.ADMIN_CORS || DEFAULT_ADMIN_CORS,
   auth_cors: process.env.AUTH_CORS || DEFAULT_AUTH_CORS,
-  database_url: process.env.DATABASE_URL || DEFAULT_DATABASE_URL,
   redis_url: process.env.REDIS_URL || DEFAULT_REDIS_URL,
+  ...(hasPostgres
+    ? {
+        database_url: process.env.DATABASE_URL,
+        database_extra: requiresSsl ? { ssl: { rejectUnauthorized: false } } : {},
+      }
+    : {
+        database_type: "sqlite",
+        database_database: "./medusa.db",
+      }),
 };
 
 // Export the consolidated configuration module
