@@ -45,10 +45,30 @@ const { getAdminPortalHTML } = require("./admin-portal")
       })
     })
 
-    // 2. Direct embedded Admin Portal served on Render root & /admin
-    app.get(["/", "/admin", "/app", "/admin/login", "/admin/dashboard"], (req, res) => {
+    // 2. Direct embedded Admin Portal served on Render root & /admin routes
+    const serveAdminPortal = (req, res) => {
       res.setHeader("Content-Type", "text/html; charset=utf-8")
       res.send(getAdminPortalHTML())
+    }
+
+    app.get("/", serveAdminPortal)
+    app.get("/admin", serveAdminPortal)
+    app.get("/admin/login", serveAdminPortal)
+    app.get("/admin/dashboard", serveAdminPortal)
+    app.get("/app", serveAdminPortal)
+
+    // Intercept any browser HTML request sent to /admin or /app before Medusa's 401 middleware
+    app.use((req, res, next) => {
+      if (
+        req.method === "GET" &&
+        req.headers.accept &&
+        req.headers.accept.includes("text/html") &&
+        !req.path.startsWith("/store") &&
+        (req.path === "/" || req.path.startsWith("/admin") || req.path.startsWith("/app"))
+      ) {
+        return serveAdminPortal(req, res)
+      }
+      next()
     })
 
     try {
@@ -58,6 +78,14 @@ const { getAdminPortalHTML } = require("./admin-portal")
       })
       const configModule = container.resolve("configModule")
       const port = process.env.PORT ?? configModule.projectConfig.port ?? 9000
+
+      // Fallback for HTML requests after loaders
+      app.use((err, req, res, next) => {
+        if (req.headers.accept && req.headers.accept.includes("text/html")) {
+          return serveAdminPortal(req, res)
+        }
+        next(err)
+      })
 
       const server = GracefulShutdownServer.create(
         app.listen(port, (err) => {
