@@ -1,26 +1,50 @@
-/dist
+```
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+
+# Environment variables
 .env
-.DS_Store
-/uploads
-/node_modules
-yarn-error.log
+.env.local
+.env.*
 
-.idea
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
 
-coverage
+# Logs
+*.log
 
-!src/**
+# Coverage
+coverage/
+htmlcov/
+.coverage
 
-./tsconfig.tsbuildinfo
+# Temporary files
+*.tmp
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info/
+.eggs/
+
+# Next.js specific
+.next/
+out/
+
+# Lock files
 package-lock.json
 yarn.lock
-medusa-db.sql
-build
-.cache
-
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
+pnpm-lock.yaml
+```
