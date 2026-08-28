@@ -1,96 +1,70 @@
-<p align="center">
-  <a href="https://www.medusajs.com">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/59018053/229103275-b5e482bb-4601-46e6-8142-244f531cebdb.svg">
-      <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-      <img alt="Medusa logo" src="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    </picture>
-  </a>
-</p>
+# Book Publishing Platform
 
-<h1 align="center">
-  Medusa
-</h1>
+A multi-store book publishing platform built with Medusa.js backend and Next.js frontend.
 
-<h4 align="center">
-  <a href="https://docs.medusajs.com">Documentation</a> |
-  <a href="https://www.medusajs.com">Website</a>
-</h4>
+## Monorepo Structure
 
-<p align="center">
+```
+/
+├── apps/
+│   ├── backend/          # Medusa.js e-commerce backend
+│   ├── web/              # Next.js storefront
+│   └── mobile/           # React Native app (future)
+├── packages/
+│   ├── shared-types/     # Shared TypeScript types
+│   ├── shared-ui/        # Shared React components
+│   └── shared-utils/     # Shared utilities
+└── package.json          # Root workspace config
+```
+
+## Quick Start
+
+```bash
+# Install all dependencies
+yarn install
+
+# Run both backend and frontend in development
+yarn dev
+
+# Run only backend
+yarn dev:backend
+
+# Run only web frontend
+yarn dev:web
+
+# Build all apps
+yarn build
+```
+
+## Architecture
+
+This monorepo follows a modular architecture where:
+- **apps/backend**: Medusa.js backend handling e-commerce logic, database, and APIs
+- **apps/web**: Next.js storefront for web customers
+- **apps/mobile**: Future React Native mobile application
+- **packages/**: Shared code including types, UI components, and utilities
+
+## Shared Packages
+
+### @book-platform/shared-types
+Contains all TypeScript interfaces, types, and enums used across the platform for type safety.
+
+### @book-platform/shared-ui
+Reusable UI components following the design system for consistent branding.
+
+### @book-platform/shared-utils
+Common utility functions for validation, formatting, API calls, etc.
+
+## Development Guidelines
+
+1. **Shared Code**: Put reusable code in `packages/` directory
+2. **App-Specific Code**: Keep app-specific logic in respective `apps/` directory
+3. **Type Safety**: Use shared types for API contracts between frontend and backend
+4. **Component Library**: Build UI components in shared-ui for consistency
+
+## Deployment
+
+- **Backend**: Deploy to your preferred cloud provider (Heroku, Railway, AWS)
+- **Web**: Deploy to Vercel (automatic detection of Next.js)
+- **Mobile**: Build with Expo/Capacitor for iOS and Android
   Building blocks for digital commerce
-</p>
-<p align="center">
-  <a href="https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="PRs welcome!" />
-  </a>
-  <a href="https://www.producthunt.com/posts/medusa">
-    <img src="https://img.shields.io/badge/Product%20Hunt-%231%20Product%20of%20the%20Day-%23DA552E" alt="Product Hunt">
-  </a>
-  <a href="https://discord.gg/xpCwq3Kfn8">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Discord Chat" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=medusajs">
-    <img src="https://img.shields.io/twitter/follow/medusajs.svg?label=Follow%20@medusajs" alt="Follow @medusajs" />
-  </a>
-</p>
-
-## How to install locally
-
-Visit the [Backend Development Guide](https://docs.medusajs.com/development/backend/install).
-
-1. Clone the GitHub repository to your local machine:
-    ```sh
-    git clone 'https://github.com/saajiidi/medusa-backend'
-    ```
-2. Navigate to the cloned repository directory:
-    ```sh
-    cd medusa-backend
-    ```
-3. Install Dependencies:
-    ```sh
-    npm install
-    ```
-4. Start the development server:
-    ```sh
-    medusa develop # or npx medusa develop
-    ```
-    Your site is now running at http://localhost:7001!
-5. Default admin: admin@medusa-test.com pass: supersecret
-
-## Compatibility
-
-This starter is compatible with versions >= 1.8.0 of `@medusajs/medusa`.
-
-## Getting Started
-
-Visit the [Quickstart Guide](https://docs.medusajs.com/create-medusa-app) to set up a server.
-
-Visit the [Docs](https://docs.medusajs.com/development/backend/prepare-environment) to learn more about our system requirements.
-
-## What is Medusa
-
-Medusa is a set of commerce modules and tools that allow you to build rich, reliable, and performant commerce applications without reinventing core commerce logic. The modules can be customized and used to build advanced ecommerce stores, marketplaces, or any product that needs foundational commerce primitives. All modules are open-source and freely available on npm.
-
-Learn more about [Medusa’s architecture](https://docs.medusajs.com/development/fundamentals/architecture-overview) and [commerce modules](https://docs.medusajs.com/modules/overview) in the Docs.
-
-## Roadmap, Upgrades & Plugins
-
-You can view the planned, started, and completed features in the [Roadmap discussion](https://github.com/medusajs/medusa/discussions/categories/roadmap).
-
-Follow the [Upgrade Guides](https://docs.medusajs.com/upgrade-guides/) to keep your Medusa project up-to-date.
-
-Check out all [available Medusa plugins](https://medusajs.com/plugins/).
-
-## Community & Contributions
-
-The community and core team are available in [GitHub Discussions](https://github.com/medusajs/medusa/discussions), where you can ask for support, discuss roadmap, and share ideas.
-
-Join our [Discord server](https://discord.com/invite/medusajs) to meet other community members.
-
-## Other channels
-
-- [GitHub Issues](https://github.com/medusajs/medusa/issues)
-- [Twitter](https://twitter.com/medusajs)
-- [LinkedIn](https://www.linkedin.com/company/medusajs)
-- [Medusa Blog](https://medusajs.com/blog/)
