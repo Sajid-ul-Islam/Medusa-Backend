@@ -45,18 +45,12 @@ export default function CartPage() {
   const total = cart.total || subtotal + shipping;
 
   // Group items by publisher to implement Split-Cart multi-vendor UX
-  const itemsByPublisher = cart.items.reduce((acc: Record<string, any[]>, item: any) => {
-    const pubName = item.publisher?.name || "Independent Publisher";
-    if (!acc[pubName]) acc[pubName] = [];
-    acc[pubName].push(item);
-    return acc;
-  }, {});
-
-  const publisherCount = Object.keys(itemsByPublisher).length;
-
-  const handleProceedToCheckout = () => {
-    setIsNavigating(true);
-    router.push("/checkout");
+  const itemsByPublisher: Record<string, any[]> = cart.items.reduce(
+    (acc: Record<string, any[]>, item: any) => {
+      const pubName = item.publisher?.name || "Independent Publisher";
+      if (!acc[pubName]) acc[pubName] = [];
+      acc[pubName].push(item);
+      return acc;
   };
 
   return (
@@ -90,14 +84,13 @@ export default function CartPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Cart Items List */}
         <div className="lg:col-span-8 space-y-6">
-          {Object.entries(itemsByPublisher).map(([publisherName, items]) => (
+          {Object.entries(itemsByPublisher).map(([publisherName, items]: [string, any[]]) => (
             <div key={publisherName} className="bg-card rounded-xl border overflow-hidden shadow-sm">
               {/* Publisher Group Header */}
               <div className="bg-muted/40 px-5 py-3 border-b flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Store className="h-4 w-4 text-primary" />
                   <span>Fulfilled by {publisherName}</span>
-                </div>
                 <span className="text-xs text-muted-foreground">
                   {items.length} {items.length === 1 ? "item" : "items"}
                 </span>
