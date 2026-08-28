@@ -216,7 +216,7 @@ export default function BookDetailPage() {
                   <Store className="h-5 w-5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-muted-foreground">Published & Dispatched by</p>
+                  <p className="text-xs text-muted-foreground">Published &amp; Dispatched by</p>
                   <Link
                     href={`/publishers/${book.publisher.handle || book.publisher.id}`}
                     className="text-sm font-semibold hover:text-primary transition-colors truncate block"
@@ -234,7 +234,7 @@ export default function BookDetailPage() {
                   ${(selectedVariant.price / 100).toFixed(2)}
                 </span>
                 <span className="text-sm text-emerald-600 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="h-4 w-4" /> In Stock & Ready
+                  <CheckCircle2 className="h-4 w-4" /> In Stock &amp; Ready
                 </span>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default function BookDetailPage() {
 
             {/* Synopsis / Description */}
             <div className="mt-8 pt-8 border-t">
-              <h2 className="text-xl font-bold mb-4">Synopsis & Overview</h2>
+              <h2 className="text-xl font-bold mb-4">Synopsis &amp; Overview</h2>
               <div className="prose dark:prose-invert max-w-none text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
                 {book.long_description || book.description}
               </div>

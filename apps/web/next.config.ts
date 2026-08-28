@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable static exports for Vercel deployment
-  output: 'standalone',
-  
   // Optimize images for production
   images: {
     unoptimized: false,

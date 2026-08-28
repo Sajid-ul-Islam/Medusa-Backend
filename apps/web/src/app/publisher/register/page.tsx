@@ -118,7 +118,7 @@ export default function PublisherRegisterPage() {
         <div className="bg-card rounded-2xl border p-8 shadow-sm">
           {step === 1 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-bold mb-4">1. Publisher & Storefront Info</h2>
+              <h2 className="text-xl font-bold mb-4">1. Publisher &amp; Storefront Info</h2>
 
               <div>
                 <label className="text-xs font-semibold text-muted-foreground block mb-1">
@@ -167,7 +167,7 @@ export default function PublisherRegisterPage() {
 
               <div>
                 <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                  Publisher Description & Mission
+                  Publisher Description &amp; Mission
                 </label>
                 <textarea
                   name="description"
@@ -205,11 +205,11 @@ export default function PublisherRegisterPage() {
                   onChange={handleInputChange}
                   className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 >
-                  <option>Technology & Computer Science</option>
-                  <option>Academic & University Textbooks</option>
-                  <option>Literary Fiction & Novels</option>
-                  <option>Non-Fiction, History & Science</option>
-                  <option>Children & Young Adult</option>
+                  <option>Technology &amp; Computer Science</option>
+                  <option>Academic &amp; University Textbooks</option>
+                  <option>Literary Fiction &amp; Novels</option>
+                  <option>Non-Fiction, History &amp; Science</option>
+                  <option>Children &amp; Young Adult</option>
                 </select>
               </div>
 
@@ -223,7 +223,7 @@ export default function PublisherRegisterPage() {
                   onChange={handleInputChange}
                   className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 >
-                  <option>Both Physical Print & Digital eBooks</option>
+                  <option>Both Physical Print &amp; Digital eBooks</option>
                   <option>Digital eBooks Only (PDF / ePub)</option>
                   <option>Physical Print Editions Only</option>
                 </select>
@@ -231,10 +231,10 @@ export default function PublisherRegisterPage() {
 
               <div className="p-4 bg-muted/40 rounded-xl border text-xs text-muted-foreground space-y-2">
                 <div className="flex items-center gap-2 font-semibold text-foreground">
-                  <ShieldCheck className="h-4 w-4 text-emerald-600" /> Digital Rights & Anti-Piracy Protection
+                  <ShieldCheck className="h-4 w-4 text-emerald-600" /> Digital Rights &amp; Anti-Piracy Protection
                 </div>
                 <p>
-                  All digital book uploads automatically receive digital watermark stamping with the purchasing customer's email and encrypted order tokens.
+                  All digital book uploads automatically receive digital watermark stamping with the purchasing customer&apos;s email and encrypted order tokens.
                 </p>
               </div>
 
@@ -251,7 +251,7 @@ export default function PublisherRegisterPage() {
 
           {step === 3 && (
             <form onSubmit={handleCompleteRegistration} className="space-y-4">
-              <h2 className="text-xl font-bold mb-4">3. Payouts & Stripe Connect</h2>
+              <h2 className="text-xl font-bold mb-4">3. Payouts &amp; Stripe Connect</h2>
 
               <div className="p-5 bg-primary/5 border border-primary/20 rounded-xl text-sm space-y-3">
                 <div className="flex items-center gap-2 font-bold text-primary">

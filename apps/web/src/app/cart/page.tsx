@@ -51,6 +51,15 @@ export default function CartPage() {
       if (!acc[pubName]) acc[pubName] = [];
       acc[pubName].push(item);
       return acc;
+    },
+    {}
+  );
+
+  const publisherCount = Object.keys(itemsByPublisher).length;
+
+  const handleProceedToCheckout = () => {
+    setIsNavigating(true);
+    router.push("/checkout");
   };
 
   return (
@@ -91,6 +100,7 @@ export default function CartPage() {
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Store className="h-4 w-4 text-primary" />
                   <span>Fulfilled by {publisherName}</span>
+                </div>
                 <span className="text-xs text-muted-foreground">
                   {items.length} {items.length === 1 ? "item" : "items"}
                 </span>

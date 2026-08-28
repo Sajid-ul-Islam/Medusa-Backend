@@ -153,7 +153,7 @@ export default function PublisherDashboard() {
             </div>
           </div>
           <p className="text-3xl font-extrabold">{totalSales}</p>
-          <p className="text-xs text-muted-foreground mt-1">Physical & digital copies</p>
+          <p className="text-xs text-muted-foreground mt-1">Physical &amp; digital copies</p>
         </div>
 
         <div className="bg-card rounded-2xl border p-6 shadow-sm">
@@ -166,7 +166,7 @@ export default function PublisherDashboard() {
             </div>
           </div>
           <p className="text-lg font-bold text-emerald-600 flex items-center gap-1">
-            <CheckCircle2 className="h-5 w-5" /> Active & Verified
+            <CheckCircle2 className="h-5 w-5" /> Active &amp; Verified
           </p>
           <p className="text-xs text-muted-foreground mt-1">Direct Stripe Connect</p>
         </div>
@@ -381,7 +381,7 @@ export default function PublisherDashboard() {
                         onChange={(e) => setNewBook({ ...newBook, type: e.target.value })}
                         className="w-full h-10 px-3 rounded-lg border bg-background text-sm"
                       >
-                        <option value="both">Both Physical Print & Digital eBook</option>
+                        <option value="both">Both Physical Print &amp; Digital eBook</option>
                         <option value="physical">Physical Print Edition Only</option>
                         <option value="digital">Digital eBook Only (PDF / ePub)</option>
                       </select>
@@ -396,16 +396,16 @@ export default function PublisherDashboard() {
                         onChange={(e) => setNewBook({ ...newBook, category: e.target.value })}
                         className="w-full h-10 px-3 rounded-lg border bg-background text-sm"
                       >
-                        <option>Technology & Computer Science</option>
-                        <option>Academic & Science</option>
-                        <option>Fiction & Literature</option>
-                        <option>Non-Fiction & History</option>
+                        <option>Technology &amp; Computer Science</option>
+                        <option>Academic &amp; Science</option>
+                        <option>Fiction &amp; Literature</option>
+                        <option>Non-Fiction &amp; History</option>
                       </select>
                     </div>
 
                     <div className="sm:col-span-2">
                       <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                        Book Synopsis & Overview
+                        Book Synopsis &amp; Overview
                       </label>
                       <textarea
                         rows={3}

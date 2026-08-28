@@ -30,7 +30,7 @@ export default function PublishersPage() {
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12 bg-gradient-to-r from-primary/10 via-card to-card p-8 rounded-3xl border border-primary/10">
         <div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
-            Publishers & Bookstores
+            Publishers &amp; Bookstores
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
             Explore publications from certified independent bookstores and academic presses worldwide. Buy directly from the source.

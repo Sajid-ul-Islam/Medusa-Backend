@@ -41,9 +41,23 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("stripe");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const subtotal = cart?.subtotal || 4999;
+  const subtotal = cart?.subtotal || 0;
   const shippingCost = shippingOption === "express" ? 1200 : 500;
   const total = subtotal + shippingCost;
+
+  if (!cart || !cart.items || cart.items.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-20 text-center max-w-md">
+        <h1 className="text-2xl font-bold mb-3">Your Bag is Empty</h1>
+        <p className="text-sm text-muted-foreground mb-6">
+          Please add books to your shopping bag before proceeding to checkout.
+        </p>
+        <Button asChild size="lg">
+          <Link href="/books">Explore Catalog →</Link>
+        </Button>
+      </div>
+    );
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -146,7 +160,7 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
                     <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                      Email Address (for order receipt & eBook links) *
+                      Email Address (for order receipt &amp; eBook links) *
                     </label>
                     <input
                       type="email"
@@ -521,9 +535,9 @@ export default function CheckoutPage() {
                 </Button>
 
                 <div className="text-center text-xs text-muted-foreground space-y-1">
-                  <p>By placing this order, you agree to BookHub's Terms & Conditions.</p>
+                  <p>By placing this order, you agree to BookHub&apos;s Terms &amp; Conditions.</p>
                   <p className="flex items-center justify-center gap-1 text-emerald-600 font-medium">
-                    <ShieldCheck className="h-4 w-4" /> 100% Satisfaction & Authenticity Guarantee
+                    <ShieldCheck className="h-4 w-4" /> 100% Satisfaction &amp; Authenticity Guarantee
                   </p>
                 </div>
               </div>

@@ -194,7 +194,7 @@ export default function OrderSuccessPage() {
           {/* Payment & Invoice Info */}
           <div className="bg-card rounded-2xl border p-6 shadow-sm space-y-4">
             <h3 className="font-bold text-base flex items-center gap-2 border-b pb-3">
-              <CreditCard className="h-4 w-4 text-primary" /> Payment & Billing
+              <CreditCard className="h-4 w-4 text-primary" /> Payment &amp; Billing
             </h3>
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
@@ -206,7 +206,7 @@ export default function OrderSuccessPage() {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Payment Status</span>
                 <span className="text-emerald-600 font-semibold flex items-center gap-1">
-                  <ShieldCheck className="h-4 w-4" /> Paid & Verified
+                  <ShieldCheck className="h-4 w-4" /> Paid &amp; Verified
                 </span>
               </div>
               <div className="flex justify-between border-t pt-2 font-bold text-base">
