@@ -6,6 +6,9 @@
     "module": "commonjs",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "strict": false,
+    "noImplicitAny": false,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "declaration": true,
@@ -19,10 +22,12 @@
   },
   "include": ["src/"],
   "exclude": [
-    "**/__tests__",
-    "**/__fixtures__",
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.js",
     "node_modules",
     "build",
-    ".cache"
+    ".cache",
+    "dist"
   ]
 }

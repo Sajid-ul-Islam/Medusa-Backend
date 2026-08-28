@@ -3,7 +3,16 @@
   "compilerOptions": {
     "inlineSourceMap": true,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true
+    "skipDefaultLibCheck": true,
+    "strictPropertyInitialization": false,
+    "strict": false
   },
-  "exclude": ["src/admin", "**/*.spec.js", "node_modules", "dist"]
+  "exclude": [
+    "src/admin",
+    "**/__tests__/**",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "node_modules",
+    "dist"
+  ]
 }

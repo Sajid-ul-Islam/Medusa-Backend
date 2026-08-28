@@ -6,7 +6,9 @@ export async function GET(
   res: MedusaResponse
 ): Promise<void> {
   const publisherService: PublisherService = req.scope.resolve("publisherService");
-  const { handle } = req.params;
+  const handle = Array.isArray(req.params.handle)
+    ? req.params.handle[0]
+    : String(req.params.handle);
 
   try {
     let publisher = await publisherService.retrieveByHandle(handle);
@@ -27,4 +29,3 @@ export async function GET(
     });
   }
 }
-

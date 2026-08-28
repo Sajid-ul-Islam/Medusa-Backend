@@ -5,45 +5,45 @@ import { generateEntityId } from "@medusajs/medusa/dist/utils";
 @Entity()
 export class Publisher extends BaseEntity {
   @Column({ type: "varchar" })
-  name: string;
+  name!: string;
 
   @Index({ unique: true })
   @Column({ type: "varchar" })
-  email: string;
+  email!: string;
 
   @Column({ type: "varchar", nullable: true, select: false })
-  password_hash: string;
+  password_hash!: string;
 
   @Index({ unique: true })
   @Column({ type: "varchar" })
-  handle: string;
+  handle!: string;
 
   @Column({ type: "varchar" })
-  store_name: string;
+  store_name!: string;
 
   @Column({ type: "text", nullable: true })
-  description: string;
+  description!: string;
 
   @Column({ type: "varchar", nullable: true })
-  logo_url: string;
+  logo_url!: string;
 
   @Column({ type: "varchar", nullable: true })
-  banner_url: string;
+  banner_url!: string;
 
   @Column({ type: "varchar", nullable: true })
-  stripe_connect_id: string;
+  stripe_connect_id!: string;
 
   @Column({ type: "boolean", default: true })
-  is_verified: boolean;
+  is_verified!: boolean;
 
   @Column({ type: "varchar", default: "active" })
-  status: string;
+  status!: string;
 
   @Column({ type: "varchar", nullable: true })
-  location: string;
+  location!: string;
 
   @Column({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>;
+  metadata!: Record<string, unknown>;
 
   @BeforeInsert()
   private beforeInsert(): void {
