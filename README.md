@@ -1,70 +1,160 @@
-# Book Publishing Platform
+# 📚 BookHub: Multi-Store Book Publishing Marketplace
 
-A multi-store book publishing platform built with Medusa.js backend and Next.js frontend.
+A production-grade, multi-store book publishing marketplace built with **Medusa.js v1 Backend**, **Next.js 16 (Turbopack) Frontend**, and **Supabase Cloud PostgreSQL**.
 
-## Monorepo Structure
+---
+
+## 🌟 Key Platform Features
+
+### 🇧🇩 1. Bangladeshi Payment Gateways & Localized Currency (BDT ৳)
+* **bKash Direct Checkout**: Fast mobile account payment with OTP/PIN flow & instant TrxID confirmation.
+* **Nagad Mobile Wallet**: Direct wallet checkout with transaction ID verification.
+* **SSLCommerz Multi-Gateway**: Visa, Mastercard, DBBL Nexus Card, City Bank, BRAC Bank, Internet Banking.
+* **Cash on Delivery (COD)**: Physical doorstep delivery payment across all 64 districts in Bangladesh.
+* **Currency**: Standardized **Bangladeshi Taka (BDT - ৳)** across storefront, database, carts, and invoices.
+
+### 🏪 2. Multi-Store Publisher Architecture
+* Independent bookstore and author profiles (*O'Reilly Media, Oxford Academic Press, Penguin Classics*).
+* Dedicated **Publisher Portal** (`/publisher/dashboard`) with:
+  * Book catalog & physical inventory manager.
+  * Automated **85% Publisher / 15% Platform Commission** revenue splits.
+  * Configurable **bKash Merchant Account** & **Bangladeshi Bank Account** wire transfers.
+
+### 🎨 3. Dynamic Multi-Theme Switcher (3 Selectable Palettes)
+* **Warm Literary** *(Default)*: Amber gold (`#d97706`), warm parchment cream (`#faf8f5`), midnight stone.
+* **Oxford Forest**: Academic forest emerald (`#059669`), sage highlights, warm ivory background.
+* **Modern Indigo**: Tech indigo (`#4f46e5`), minimalist obsidian, high-contrast dark elements.
+* **Persistent Theme Selector**: Switcher in navbar saving user choice to `localStorage` with ambient glow hero lighting.
+
+### 🛡️ 4. Anti-Piracy Digital Watermarking Engine
+* Dynamically stamps purchaser identity (*Name, Email, Order #, Payment TrxID, and SHA256 DRM Hash*) directly onto eBook PDF and ePub license downloads.
+
+### 📱 5. Mobile App-Like Bottom Navigation Bar
+* Sticky bottom navigation bar for mobile devices (`Home`, `Books`, `Bag Counter`, `Publishers`, `Admin`).
+
+### ⭐ 6. Customer Reviews & Verified Buyer Badges
+* 1–5 star rating distributions, verified purchaser badges, and interactive "Write a Review" modal.
+
+### 🎙️ 7. Audiobook Sample Preview Player
+* Embedded voice preview player with waveform scrubber and variable playback speeds (`1x`, `1.25x`, `1.5x`, `2x`).
+
+### 🏷️ 8. Promo Codes & Discount Voucher Engine
+* Integrated cart voucher validator (`BOIMELA20` for 20% off, `EID100` for ৳100 flat discount).
+
+### 🚚 9. Pathao / Steadfast Courier Live Tracking
+* 4-step physical delivery tracker (*Order Placed → Packed → In Transit → Out for Delivery*).
+
+---
+
+## 🏛️ System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    NEXT.JS STOREFRONT                       │  👉 Deploy to: VERCEL
+│  • Public Marketplace (/books, /publishers, /cart)          │
+│  • Publisher Portal (/publisher/dashboard)                  │
+│  • Admin Management Portal (/admin/login, /admin/dashboard) │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼ (REST API / HTTPS)
+┌─────────────────────────────────────────────────────────────┐
+│                    MEDUSA.JS ENGINE                         │  👉 Deploy to: RENDER / RAILWAY
+│  • Express Server on port 9000                              │
+│  • Embedded Admin Portal (https://.../admin)                │
+│  • bKash, Nagad, SSLCommerz Services                        │
+│  • Multi-Vendor Publisher Route Handlers                    │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼ (IPv4 Pooler with SSL)
+┌─────────────────────────────────────────────────────────────┐
+│                 SUPABASE CLOUD POSTGRESQL                   │  👉 Host: SUPABASE
+│  • 78 Core Medusa Tables + Publisher Entity                 │
+│  • BDT (৳) Default Currency Ledger                          │
+│  • Payment & Fulfillment Provider Registries                │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🔑 Default Master Admin Credentials
+
+* **Admin Portal (Render)**: `https://medusa-backend-p4cl.onrender.com/admin`
+* **Admin Portal (Vercel)**: `https://your-frontend.vercel.app/admin/login`
+* **Email**: `admin@medusa-test.com`
+* **Password**: `supersecret`
+
+---
+
+## ⚙️ Environment Variables Setup
+
+### 1. Render Web Service (Backend)
+```env
+NODE_ENV=production
+PORT=9000
+DATABASE_URL=postgresql://postgres.plltvinvmifjxotzalis:Tt2khyJ7OGwjk1H2@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
+DATABASE_DIRECT_URL=postgresql://postgres:Tt2khyJ7OGwjk1H2@db.plltvinvmifjxotzalis.supabase.co:5432/postgres
+SUPABASE_URL=https://plltvinvmifjxotzalis.supabase.co
+SUPABASE_ANON_KEY=sb_publishable_-oQD3lFkWu9s76ZcQfC0xg_AO7MVzdK
+JWT_SECRET=supersecret_medusa_jwt_key_2026
+COOKIE_SECRET=supersecret_medusa_cookie_key_2026
+STORE_CORS=https://*.vercel.app,http://localhost:3000
+ADMIN_CORS=https://*.vercel.app,http://localhost:3000,http://localhost:9000
+AUTH_CORS=https://*.vercel.app,http://localhost:3000,http://localhost:9000
+MEDUSA_ADMIN_ONBOARDING_TYPE=default
+OPEN_BROWSER=false
+```
+
+* **Root Directory**: `apps/backend`
+* **Build Command**: `npm install --legacy-peer-deps && npm run build:server`
+* **Start Command**: `node index.js`
+
+---
+
+### 2. Vercel Project (Frontend)
+```env
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://medusa-backend-p4cl.onrender.com
+NEXT_PUBLIC_SUPABASE_URL=https://plltvinvmifjxotzalis.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_-oQD3lFkWu9s76ZcQfC0xg_AO7MVzdK
+NEXT_PUBLIC_APP_NAME=BookHub
+NEXT_PUBLIC_DEFAULT_CURRENCY=bdt
+NEXT_PUBLIC_CURRENCY_SYMBOL=৳
+```
+
+* **Root Directory**: `apps/web`
+
+---
+
+## 🚀 Local Development Quickstart
+
+```bash
+# 1. Install dependencies
+npm install --legacy-peer-deps
+
+# 2. Build backend server
+cd apps/backend && npm run build:server
+
+# 3. Start Medusa backend (runs on http://localhost:9000)
+node index.js
+
+# 4. In a separate terminal, start Next.js storefront (runs on http://localhost:3000)
+cd apps/web && npm run dev
+```
+
+---
+
+## 📂 Monorepo Structure
 
 ```
 /
 ├── apps/
-│   ├── backend/          # Medusa.js e-commerce backend
-│   ├── web/              # Next.js storefront
-│   └── mobile/           # React Native app (future)
-├── packages/
-│   ├── shared-types/     # Shared TypeScript types
-│   ├── shared-ui/        # Shared React components
-│   └── shared-utils/     # Shared utilities
-└── package.json          # Root workspace config
+│   ├── backend/               # Medusa.js backend & embedded admin portal
+│   │   ├── src/api/           # REST endpoints (publishers, payments, auth)
+│   │   ├── src/models/        # TypeORM entities (Publisher, Onboarding)
+│   │   ├── src/services/      # Business logic (bKash, SSLCommerz, Publisher)
+│   │   └── admin-portal.js    # Self-contained Admin UI served on Render
+│   └── web/                   # Next.js 16 storefront
+│       ├── src/app/           # App router (/books, /publishers, /cart, /checkout)
+│       ├── src/components/    # UI components (AudiobookPlayer, BookReviews, ThemeSwitcher)
+│       └── src/context/       # Contexts (CartContext, ThemeContext)
+└── package.json               # Root workspace configuration
 ```
-
-## Quick Start
-
-```bash
-# Install all dependencies
-yarn install
-
-# Run both backend and frontend in development
-yarn dev
-
-# Run only backend
-yarn dev:backend
-
-# Run only web frontend
-yarn dev:web
-
-# Build all apps
-yarn build
-```
-
-## Architecture
-
-This monorepo follows a modular architecture where:
-- **apps/backend**: Medusa.js backend handling e-commerce logic, database, and APIs
-- **apps/web**: Next.js storefront for web customers
-- **apps/mobile**: Future React Native mobile application
-- **packages/**: Shared code including types, UI components, and utilities
-
-## Shared Packages
-
-### @book-platform/shared-types
-Contains all TypeScript interfaces, types, and enums used across the platform for type safety.
-
-### @book-platform/shared-ui
-Reusable UI components following the design system for consistent branding.
-
-### @book-platform/shared-utils
-Common utility functions for validation, formatting, API calls, etc.
-
-## Development Guidelines
-
-1. **Shared Code**: Put reusable code in `packages/` directory
-2. **App-Specific Code**: Keep app-specific logic in respective `apps/` directory
-3. **Type Safety**: Use shared types for API contracts between frontend and backend
-4. **Component Library**: Build UI components in shared-ui for consistency
-
-## Deployment
-
-- **Backend**: Deploy to your preferred cloud provider (Heroku, Railway, AWS)
-- **Web**: Deploy to Vercel (automatic detection of Next.js)
-- **Mobile**: Build with Expo/Capacitor for iOS and Android
-  Building blocks for digital commerce
