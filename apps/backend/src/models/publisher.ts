@@ -1,6 +1,6 @@
 import { BaseEntity } from "@medusajs/medusa";
 import { BeforeInsert, Column, Entity, Index } from "typeorm";
-import { generateEntityId } from "@medusajs/utils";
+import { generateEntityId } from "@medusajs/medusa/dist/utils";
 
 @Entity()
 export class Publisher extends BaseEntity {
@@ -50,4 +50,3 @@ export class Publisher extends BaseEntity {
     this.id = generateEntityId(this.id, "pub");
   }
 }
-
