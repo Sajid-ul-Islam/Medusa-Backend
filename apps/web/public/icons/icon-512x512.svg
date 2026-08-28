@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-opacity="0.3" />
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="url(#grad)" />
+  <!-- Book Spine & Pages Icon -->
+  <g filter="url(#shadow)" transform="translate(106, 106)">
+    <rect x="20" y="30" width="260" height="240" rx="16" fill="#ffffff" opacity="0.95" />
+    <!-- Left Bookmark Stripe -->
+    <path d="M 20 30 L 70 30 L 70 270 L 20 270 Z" fill="#0f172a" opacity="0.1" />
+    <!-- Book Open Pages Motif -->
+    <path d="M 60 70 Q 150 50 150 240 Q 60 220 60 70 Z" fill="#d97706" opacity="0.85" />
+    <path d="M 150 70 Q 240 50 240 240 Q 150 220 150 70 Z" fill="#d97706" />
+    <!-- Gold Sparkle -->
+    <circle cx="150" cy="140" r="14" fill="#ffffff" />
+    <!-- Text Lines -->
+    <line x1="80" y1="180" x2="130" y2="180" stroke="#ffffff" stroke-width="4" stroke-linecap="round" />
+    <line x1="170" y1="180" x2="220" y2="180" stroke="#ffffff" stroke-width="4" stroke-linecap="round" />
+  </g>
+</svg>

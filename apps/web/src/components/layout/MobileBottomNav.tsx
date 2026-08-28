@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, BookOpen, ShoppingBag, Store, ShieldCheck } from "lucide-react";
+import { Home, BookOpen, ShoppingBag, Store, UserCheck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export function MobileBottomNav() {
@@ -46,10 +46,10 @@ export function MobileBottomNav() {
       isActive: pathname.startsWith("/publishers"),
     },
     {
-      label: "Admin",
-      href: "/admin/login",
-      icon: ShieldCheck,
-      isActive: pathname.startsWith("/admin"),
+      label: "Sell",
+      href: "/publisher/dashboard",
+      icon: UserCheck,
+      isActive: pathname.startsWith("/publisher"),
     },
   ];
 
