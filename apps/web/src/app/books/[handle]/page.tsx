@@ -9,6 +9,8 @@ import { useCart } from "@/context/CartContext";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product/ProductCard";
+import { BookReviews } from "@/components/product/BookReviews";
+import { AudiobookPlayer } from "@/components/product/AudiobookPlayer";
 import {
   BookOpen,
   Store,
@@ -364,6 +366,12 @@ export default function BookDetailPage() {
                 {book.long_description || book.description}
               </div>
             </div>
+
+            {/* Audiobook Voice Preview */}
+            <AudiobookPlayer title={book.title} />
+
+            {/* Customer Ratings & Reviews */}
+            <BookReviews bookTitle={book.title} />
           </div>
         </div>
 

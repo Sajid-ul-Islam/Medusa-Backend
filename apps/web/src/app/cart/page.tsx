@@ -15,13 +15,22 @@ import {
   ShieldCheck,
   Truck,
   BookOpen,
+  Tag,
+  Check,
 } from "lucide-react";
 
 export default function CartPage() {
   const router = useRouter();
   const { cart, isLoading, removeFromCart, updateQuantity } = useCart();
-  const { success, info } = useToast();
+  const { success, info, error: toastError } = useToast();
   const [isNavigating, setIsNavigating] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedDiscount, setAppliedDiscount] = useState<{
+    code: string;
+    percent?: number;
+    amount?: number;
+    discountTotal: number;
+  } | null>(null);
 
   if (!cart || !cart.items || cart.items.length === 0) {
     return (
@@ -42,7 +51,8 @@ export default function CartPage() {
 
   const subtotal = cart.subtotal || 0;
   const shipping = cart.shipping_total || 500;
-  const total = cart.total || subtotal + shipping;
+  const discountVal = appliedDiscount ? appliedDiscount.discountTotal : 0;
+  const total = Math.max(0, subtotal - discountVal + shipping);
 
   // Group items by publisher to implement Split-Cart multi-vendor UX
   const itemsByPublisher: Record<string, any[]> = cart.items.reduce(
@@ -56,6 +66,41 @@ export default function CartPage() {
   );
 
   const publisherCount = Object.keys(itemsByPublisher).length;
+
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    const code = couponCode.trim().toUpperCase();
+    if (!code) return;
+
+    if (code === "BOIMELA20") {
+      const discount = Math.round(subtotal * 0.2);
+      const discountObj = { code, percent: 20, discountTotal: discount };
+      setAppliedDiscount(discountObj);
+      sessionStorage.setItem("bookhub_applied_discount", JSON.stringify(discountObj));
+      success("Voucher BOIMELA20 applied: 20% Discount!", "Promo Code Applied");
+    } else if (code === "EID100") {
+      const discount = Math.min(subtotal, 10000); // ৳100
+      const discountObj = { code, amount: 10000, discountTotal: discount };
+      setAppliedDiscount(discountObj);
+      sessionStorage.setItem("bookhub_applied_discount", JSON.stringify(discountObj));
+      success("Voucher EID100 applied: ৳100 Flat Discount!", "Promo Code Applied");
+    } else if (code === "READBD10") {
+      const discount = Math.round(subtotal * 0.1);
+      const discountObj = { code, percent: 10, discountTotal: discount };
+      setAppliedDiscount(discountObj);
+      sessionStorage.setItem("bookhub_applied_discount", JSON.stringify(discountObj));
+      success("Voucher READBD10 applied: 10% Discount!", "Promo Code Applied");
+    } else {
+      toastError("Invalid voucher code. Try 'BOIMELA20' or 'EID100'");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedDiscount(null);
+    sessionStorage.removeItem("bookhub_applied_discount");
+    setCouponCode("");
+    info("Coupon removed.");
+  };
 
   const handleProceedToCheckout = () => {
     setIsNavigating(true);
@@ -71,31 +116,17 @@ export default function CartPage() {
             Review your selected books before proceeding to secure checkout.
           </p>
         </div>
-        <Link
-          href="/books"
-          className="text-sm text-primary hover:underline font-medium hidden sm:inline"
-        >
-          ← Continue Shopping
-        </Link>
+        <span className="text-xs px-3 py-1 bg-primary/10 text-primary font-semibold rounded-full">
+          {publisherCount} {publisherCount === 1 ? "Publisher Store" : "Publisher Stores"}
+        </span>
       </div>
-
-      {/* Multi-Publisher Notice (Goal 7: Split Cart Experience) */}
-      {publisherCount > 1 && (
-        <div className="mb-6 p-4 rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/40 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 text-sm flex items-start gap-3">
-          <Store className="h-5 w-5 flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
-          <div>
-            <span className="font-semibold">Multi-Publisher Order:</span> You have items from{" "}
-            <strong>{publisherCount} different publishers</strong>. Physical items will be packaged and delivered separately by their respective publishers.
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Cart Items List */}
         <div className="lg:col-span-8 space-y-6">
-          {Object.entries(itemsByPublisher).map(([publisherName, items]: [string, any[]]) => (
+          {Object.entries(itemsByPublisher).map(([publisherName, items]) => (
             <div key={publisherName} className="bg-card rounded-xl border overflow-hidden shadow-sm">
-              {/* Publisher Group Header */}
+              {/* Publisher Store Header */}
               <div className="bg-muted/40 px-5 py-3 border-b flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-semibold">
                   <Store className="h-4 w-4 text-primary" />
@@ -182,13 +213,12 @@ export default function CartPage() {
                           type="button"
                           onClick={async () => {
                             await removeFromCart(item.id);
-                            success("Item removed from your cart");
+                            info("Removed from bag");
                           }}
                           disabled={isLoading}
-                          className="text-xs text-rose-600 hover:text-rose-700 flex items-center gap-1 font-medium transition-colors"
+                          className="text-xs text-destructive hover:underline flex items-center gap-1"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          Remove
+                          <Trash2 className="h-3.5 w-3.5" /> Remove
                         </button>
                       </div>
                     </div>
@@ -200,7 +230,51 @@ export default function CartPage() {
         </div>
 
         {/* Order Summary Column */}
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 space-y-4">
+          {/* Promo Code Box */}
+          <div className="bg-card rounded-xl border p-5 shadow-sm space-y-3">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <Tag className="h-3.5 w-3.5 text-primary" /> Promo Voucher Code
+            </div>
+
+            {appliedDiscount ? (
+              <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-xs text-emerald-600 font-mono">
+                    {appliedDiscount.code}
+                  </span>
+                  <div className="text-[11px] text-emerald-600">
+                    Saved ৳{(appliedDiscount.discountTotal / 100).toFixed(0)}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRemoveCoupon}
+                  className="text-xs text-destructive font-semibold hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="e.g. BOIMELA20"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="flex-1 h-9 px-3 uppercase font-mono rounded-lg border bg-background text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+                <Button type="submit" size="sm" variant="secondary" className="h-9 text-xs">
+                  Apply
+                </Button>
+              </form>
+            )}
+            <div className="text-[10px] text-muted-foreground">
+              Try <span className="font-mono text-primary font-bold">BOIMELA20</span> for 20% off or <span className="font-mono text-primary font-bold">EID100</span>
+            </div>
+          </div>
+
+          {/* Order Summary Box */}
           <div className="bg-card rounded-xl border p-6 sticky top-24 shadow-sm">
             <h2 className="text-xl font-bold mb-4">Order Summary</h2>
 
@@ -209,8 +283,14 @@ export default function CartPage() {
                 <span className="text-muted-foreground">Items Subtotal</span>
                 <span className="font-medium">৳{(subtotal / 100).toFixed(0)}</span>
               </div>
+              {appliedDiscount && (
+                <div className="flex justify-between text-emerald-600 font-medium">
+                  <span>Voucher Discount ({appliedDiscount.code})</span>
+                  <span>-৳{(appliedDiscount.discountTotal / 100).toFixed(0)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Estimated Shipping</span>
+                <span className="text-muted-foreground">Estimated Shipping (BD)</span>
                 <span className="font-medium">
                   {shipping === 0 ? "FREE" : `৳${(shipping / 100).toFixed(0)}`}
                 </span>
@@ -222,7 +302,7 @@ export default function CartPage() {
             </div>
 
             <div className="flex justify-between font-bold text-lg mb-6">
-              <span>Total</span>
+              <span>Total Payable</span>
               <span className="text-primary">৳{(total / 100).toFixed(0)}</span>
             </div>
 
@@ -238,11 +318,11 @@ export default function CartPage() {
             <div className="mt-6 space-y-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4 text-emerald-600 flex-shrink-0" />
-                <span>SSL Encrypted Checkout</span>
+                <span>bKash, Nagad &amp; Card Encrypted</span>
               </div>
               <div className="flex items-center gap-2">
                 <Truck className="h-4 w-4 text-primary flex-shrink-0" />
-                <span>Direct delivery from independent publishers</span>
+                <span>Direct delivery across 64 districts in Bangladesh</span>
               </div>
             </div>
           </div>

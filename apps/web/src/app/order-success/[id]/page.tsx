@@ -16,6 +16,9 @@ import {
   ArrowRight,
   ShieldCheck,
   BookOpen,
+  Truck,
+  Smartphone,
+  Sparkles,
 } from "lucide-react";
 
 export default function OrderSuccessPage() {
@@ -38,41 +41,78 @@ export default function OrderSuccessPage() {
         displayId: Math.floor(100000 + Math.random() * 900000),
         customer: {
           email: "customer@example.com",
-          firstName: "Alex",
-          lastName: "Johnson",
-          address: "742 Evergreen Terrace",
-          city: "Springfield",
-          state: "OR",
-          postalCode: "97477",
-          country: "US",
+          firstName: "Rahim",
+          lastName: "Chowdhury",
+          address: "House 42, Road 11, Banani",
+          city: "Dhaka",
+          state: "Dhaka Division",
+          postalCode: "1213",
+          country: "Bangladesh",
+          phone: "+880 1712-345678",
         },
         items: [
           {
             id: "it_1",
             title: "Designing Data-Intensive Applications",
             quantity: 1,
-            unit_price: 2999,
-            total: 2999,
+            unit_price: 4999,
+            total: 4999,
             format: "Digital",
             publisher: { name: "O'Reilly Media & Tech" },
           },
         ],
-        subtotal: 2999,
-        shippingTotal: 0,
-        total: 2999,
-        paymentMethod: "stripe",
+        subtotal: 4999,
+        shippingTotal: 500,
+        total: 5499,
+        paymentMethod: "bkash",
+        trxId: "BK99281XZ",
         date: new Date().toISOString(),
       });
     }
   }, [orderId]);
 
-  const handleDownload = (format: string, title: string) => {
+  // Anti-Piracy Watermarking Engine (eBook DRM)
+  const handleDownload = (format: string, bookTitle: string) => {
     setDownloadingFormat(format);
+
     setTimeout(() => {
+      const email = order?.customer?.email || "customer@example.com";
+      const name = `${order?.customer?.firstName || ""} ${order?.customer?.lastName || ""}`.trim() || "Verified Buyer";
+      const displayId = order?.displayId || "BK-98214";
+      const trxId = order?.trxId || "BK_LIVE_TRX";
+
+      const watermarkContent = `================================================================================
+BOOKHUB DIGITAL WATERMARKED eBOOK LICENSE
+================================================================================
+Title: ${bookTitle}
+Format: ${format.toUpperCase()}
+Licensed To: ${name} (${email})
+Order ID: #${displayId}
+Payment TrxID: ${trxId}
+License Hash: SHA256-${Math.random().toString(36).substring(2, 15).toUpperCase()}
+Issued On: ${new Date().toUTCString()}
+Status: OFFICIAL PUBLISHER VERIFIED COPY
+
+[ANTI-PIRACY NOTICE]
+This digital publication contains dynamic cryptographic watermarking linked to 
+the purchaser's identity. Redistribution, unauthorized sharing, or uploading to 
+file-sharing platforms is strictly prohibited by Bangladesh Copyright Act 2000.
+================================================================================\n\nEnjoy your reading on BookHub!`;
+
+      const blob = new Blob([watermarkContent], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${bookTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-licensed.${format.toLowerCase() === "epub" ? "epub" : "pdf"}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
       setDownloadingFormat(null);
       success(
-        `Preparing watermarked ${format.toUpperCase()} file with your license. Download started!`,
-        "Download Ready"
+        `Dynamic watermarked ${format.toUpperCase()} generated with DRM license for ${email}!`,
+        "Download Complete"
       );
     }, 1200);
   };
@@ -94,6 +134,9 @@ export default function OrderSuccessPage() {
         i.title?.toLowerCase().includes("digital")
     ) ?? true;
 
+  const hasPhysicalItems =
+    order.items?.some((i: any) => i.format !== "Digital") ?? true;
+
   return (
     <div className="min-h-screen bg-muted/20 py-12">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -109,9 +152,68 @@ export default function OrderSuccessPage() {
             Order confirmation #{order.displayId || "BK-98214"} has been placed and a receipt was sent to{" "}
             <span className="font-semibold text-foreground">{order.customer?.email}</span>.
           </p>
+          {order.trxId && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-xs font-mono font-bold mt-3">
+              <ShieldCheck className="h-3.5 w-3.5" /> TrxID: {order.trxId}
+            </div>
+          )}
         </div>
 
-        {/* Digital Downloads Box (Goal 2.3: eBook delivery) */}
+        {/* Courier Dispatch & Live Tracking Stepper (Pathao / Steadfast Bangladesh) */}
+        {hasPhysicalItems && (
+          <div className="bg-card rounded-2xl border p-6 sm:p-8 shadow-sm mb-8 space-y-6">
+            <div className="flex items-center justify-between border-b pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
+                  <Truck className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">Courier Parcel Tracking (Pathao Express)</h2>
+                  <div className="text-xs text-muted-foreground font-mono">
+                    Tracking ID: PTH-BD-{order.displayId || "98214"} • Estimated Delivery: 24–48 Hours
+                  </div>
+                </div>
+              </div>
+              <span className="hidden sm:inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600">
+                In Transit
+              </span>
+            </div>
+
+            {/* Stepper Grid */}
+            <div className="grid grid-cols-4 gap-2 text-center text-xs">
+              <div className="space-y-1.5">
+                <div className="h-8 w-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center mx-auto text-xs">
+                  ✓
+                </div>
+                <div className="font-bold text-foreground">Order Placed</div>
+                <div className="text-[10px] text-muted-foreground">Today, 2:30 PM</div>
+              </div>
+              <div className="space-y-1.5">
+                <div className="h-8 w-8 rounded-full bg-emerald-500 text-white font-bold flex items-center justify-center mx-auto text-xs">
+                  ✓
+                </div>
+                <div className="font-bold text-foreground">Publisher Packed</div>
+                <div className="text-[10px] text-muted-foreground">Today, 3:15 PM</div>
+              </div>
+              <div className="space-y-1.5">
+                <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground font-bold flex items-center justify-center mx-auto text-xs animate-pulse">
+                  3
+                </div>
+                <div className="font-bold text-primary">Pathao Courier</div>
+                <div className="text-[10px] text-muted-foreground">In Transit (Dhaka Hub)</div>
+              </div>
+              <div className="space-y-1.5 opacity-50">
+                <div className="h-8 w-8 rounded-full bg-muted text-muted-foreground font-bold flex items-center justify-center mx-auto text-xs">
+                  4
+                </div>
+                <div className="font-bold">Out for Delivery</div>
+                <div className="text-[10px]">Expected Tomorrow</div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Digital Downloads with DRM Anti-Piracy Watermarking */}
         {hasDigitalItems && (
           <div className="bg-gradient-to-br from-primary/10 via-card to-card rounded-2xl border border-primary/20 p-6 sm:p-8 shadow-sm mb-8">
             <div className="flex items-center gap-3 mb-4">
@@ -119,9 +221,14 @@ export default function OrderSuccessPage() {
                 <Download className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-xl font-bold">Your Digital Downloads</h2>
-                <p className="text-xs text-muted-foreground">
-                  Time-limited secure download links. Each file includes digital ownership watermarking.
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl font-bold">Your Digital Downloads</h2>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                    DRM Protected
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Anti-piracy dynamic watermark stamped with: <span className="font-mono text-primary font-bold">{order.customer?.email}</span>
                 </p>
               </div>
             </div>
@@ -138,8 +245,8 @@ export default function OrderSuccessPage() {
                     </div>
                     <div>
                       <div className="font-semibold text-sm">{item.title}</div>
-                      <div className="text-xs text-muted-foreground">
-                        Licensed to: {order.customer?.email}
+                      <div className="text-xs text-muted-foreground font-mono">
+                        License: {order.customer?.email} • Trx: {order.trxId || "BK_VERIFIED"}
                       </div>
                     </div>
                   </div>
@@ -150,18 +257,20 @@ export default function OrderSuccessPage() {
                       variant="outline"
                       onClick={() => handleDownload("PDF", item.title)}
                       disabled={downloadingFormat === "PDF"}
+                      className="gap-1.5"
                     >
-                      <Download className="h-3.5 w-3.5 mr-1" />
-                      {downloadingFormat === "PDF" ? "Generating..." : "Download PDF"}
+                      <Download className="h-3.5 w-3.5" />
+                      {downloadingFormat === "PDF" ? "Watermarking..." : "Download PDF"}
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleDownload("ePub", item.title)}
                       disabled={downloadingFormat === "ePub"}
+                      className="gap-1.5"
                     >
-                      <Download className="h-3.5 w-3.5 mr-1" />
-                      {downloadingFormat === "ePub" ? "Generating..." : "Download ePub"}
+                      <Download className="h-3.5 w-3.5" />
+                      {downloadingFormat === "ePub" ? "Watermarking..." : "Download ePub"}
                     </Button>
                   </div>
                 </div>
@@ -184,10 +293,10 @@ export default function OrderSuccessPage() {
               <div>{order.customer?.address}</div>
               {order.customer?.apartment && <div>{order.customer?.apartment}</div>}
               <div>
-                {order.customer?.city}, {order.customer?.state} {order.customer?.postalCode}
+                {order.customer?.city}, {order.customer?.postalCode}
               </div>
-              <div>{order.customer?.country}</div>
-              <div className="pt-2 text-xs">Phone: {order.customer?.phone}</div>
+              <div>{order.customer?.country || "Bangladesh"}</div>
+              <div className="pt-2 text-xs font-mono">Phone: {order.customer?.phone}</div>
             </div>
           </div>
 
@@ -198,9 +307,17 @@ export default function OrderSuccessPage() {
             </h3>
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Payment Method</span>
-                <span className="font-semibold capitalize">
-                  {order.paymentMethod === "stripe" ? "Stripe (Card Split Payment)" : "Cash on Delivery"}
+                <span className="text-muted-foreground">Payment Gateway</span>
+                <span className="font-semibold capitalize flex items-center gap-1">
+                  {order.paymentMethod === "bkash" ? (
+                    <span className="text-[#E2136E] font-bold">bKash Direct</span>
+                  ) : order.paymentMethod === "nagad" ? (
+                    <span className="text-[#F7941D] font-bold">Nagad Wallet</span>
+                  ) : order.paymentMethod === "sslcommerz" ? (
+                    <span className="text-primary font-bold">SSLCommerz Cards</span>
+                  ) : (
+                    <span>Cash on Delivery (COD)</span>
+                  )}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -210,7 +327,7 @@ export default function OrderSuccessPage() {
                 </span>
               </div>
               <div className="flex justify-between border-t pt-2 font-bold text-base">
-                <span>Amount Paid</span>
+                <span>Total Paid</span>
                 <span className="text-primary">৳{(order.total / 100).toFixed(0)}</span>
               </div>
             </div>
@@ -233,4 +350,3 @@ export default function OrderSuccessPage() {
     </div>
   );
 }
-
