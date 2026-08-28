@@ -85,45 +85,6 @@ A production-grade, multi-store book publishing marketplace built with **Medusa.
 
 ---
 
-## ⚙️ Environment Variables Setup
-
-### 1. Render Web Service (Backend)
-```env
-NODE_ENV=production
-PORT=9000
-DATABASE_URL=postgresql://postgres.plltvinvmifjxotzalis:Tt2khyJ7OGwjk1H2@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
-DATABASE_DIRECT_URL=postgresql://postgres:Tt2khyJ7OGwjk1H2@db.plltvinvmifjxotzalis.supabase.co:5432/postgres
-SUPABASE_URL=https://plltvinvmifjxotzalis.supabase.co
-SUPABASE_ANON_KEY=sb_publishable_-oQD3lFkWu9s76ZcQfC0xg_AO7MVzdK
-JWT_SECRET=supersecret_medusa_jwt_key_2026
-COOKIE_SECRET=supersecret_medusa_cookie_key_2026
-STORE_CORS=https://*.vercel.app,http://localhost:3000
-ADMIN_CORS=https://*.vercel.app,http://localhost:3000,http://localhost:9000
-AUTH_CORS=https://*.vercel.app,http://localhost:3000,http://localhost:9000
-MEDUSA_ADMIN_ONBOARDING_TYPE=default
-OPEN_BROWSER=false
-```
-
-* **Root Directory**: `apps/backend`
-* **Build Command**: `npm install --legacy-peer-deps && npm run build:server`
-* **Start Command**: `node index.js`
-
----
-
-### 2. Vercel Project (Frontend)
-```env
-NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://medusa-backend-p4cl.onrender.com
-NEXT_PUBLIC_SUPABASE_URL=https://plltvinvmifjxotzalis.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_-oQD3lFkWu9s76ZcQfC0xg_AO7MVzdK
-NEXT_PUBLIC_APP_NAME=BookHub
-NEXT_PUBLIC_DEFAULT_CURRENCY=bdt
-NEXT_PUBLIC_CURRENCY_SYMBOL=৳
-```
-
-* **Root Directory**: `apps/web`
-
----
-
 ## 🚀 Local Development Quickstart
 
 ```bash
