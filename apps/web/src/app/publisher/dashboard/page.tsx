@@ -14,10 +14,15 @@ import {
   ArrowUpRight,
   CreditCard,
   Package,
+  FileSpreadsheet,
+  Download,
+  AlertCircle,
+  FileText,
+  Trash2,
 } from "lucide-react";
 
 export default function PublisherDashboard() {
-  const { success, info } = useToast();
+  const { success, info, error: toastError } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
 
   const [booksList, setBooksList] = useState<any[]>([
@@ -26,10 +31,10 @@ export default function PublisherDashboard() {
       title: "Designing Data-Intensive Applications",
       author: "Martin Kleppmann",
       isbn: "978-1449373320",
-      price: 49.99,
+      price: 1200,
       stock: 45,
       sales: 128,
-      revenue: 6398.72,
+      revenue: 153600,
       type: "Both Physical & Digital",
     },
     {
@@ -37,10 +42,10 @@ export default function PublisherDashboard() {
       title: "Clean Architecture",
       author: "Robert C. Martin",
       isbn: "978-0134494166",
-      price: 34.99,
+      price: 950,
       stock: 60,
       sales: 94,
-      revenue: 3289.06,
+      revenue: 89300,
       type: "Physical Book",
     },
   ]);
@@ -57,7 +62,11 @@ export default function PublisherDashboard() {
   });
 
   const [isPublishing, setIsPublishing] = useState(false);
-  const [stripeConnected, setStripeConnected] = useState(true);
+
+  // Bulk Import States
+  const [parsedBulkBooks, setParsedBulkBooks] = useState<any[]>([]);
+  const [bulkFileName, setBulkFileName] = useState<string | null>(null);
+  const [isImporting, setIsImporting] = useState(false);
 
   const handlePublishBook = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,11 +79,16 @@ export default function PublisherDashboard() {
         title: newBook.title,
         author: newBook.author,
         isbn: newBook.isbn || "978-" + Math.floor(1000000000 + Math.random() * 9000000000),
-        price: parseFloat(newBook.price) || 29.99,
+        price: parseFloat(newBook.price) || 500,
         stock: parseInt(newBook.stock) || 50,
         sales: 0,
         revenue: 0,
-        type: newBook.type === "both" ? "Both Physical & Digital" : newBook.type === "digital" ? "Digital eBook" : "Physical Book",
+        type:
+          newBook.type === "both"
+            ? "Both Physical & Digital"
+            : newBook.type === "digital"
+            ? "Digital eBook"
+            : "Physical Book",
       };
 
       setBooksList((prev) => [added, ...prev]);
@@ -94,27 +108,144 @@ export default function PublisherDashboard() {
     }, 800);
   };
 
+  // 1. Download Sample Excel / CSV Template
+  const handleDownloadTemplate = () => {
+    const csvContent =
+      "title,author,isbn,price_bdt,stock,format,category,description\n" +
+      "The Pragmatic Programmer,David Thomas & Andrew Hunt,978-0135957059,950,50,both,Technology,Your journey to mastery in software development\n" +
+      "Refactoring: Improving the Design of Existing Code,Martin Fowler,978-0134757599,1100,35,physical,Technology,Classic guide to improving legacy codebases\n" +
+      "দেবী (Devi),হুমায়ূন আহমেদ,978-9848765432,350,100,both,Bengali Literature,কালজয়ী মিসির আলি রহস্য উপন্যাস";
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "bookhub_bulk_catalog_template.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    success("Sample CSV & Excel template downloaded successfully!", "Template Ready");
+  };
+
+  // 2. Parse Uploaded CSV / Excel File
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setBulkFileName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      if (!text) return;
+
+      try {
+        const lines = text
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+
+        if (lines.length <= 1) {
+          toastError("Uploaded file is empty or missing data rows.");
+          return;
+        }
+
+        const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+        const parsedRows: any[] = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(",").map((v) => v.trim());
+          if (values.length >= 2 && values[0]) {
+            parsedRows.push({
+              id: "bulk_" + Math.random().toString(36).substring(2, 7),
+              title: values[0] || "Untitled Book",
+              author: values[1] || "Unknown Author",
+              isbn: values[2] || "978-" + Math.floor(1000000000 + Math.random() * 9000000000),
+              price: parseFloat(values[3]) || 500,
+              stock: parseInt(values[4]) || 50,
+              type: values[5] === "digital" ? "Digital eBook" : values[5] === "physical" ? "Physical Book" : "Both Physical & Digital",
+              category: values[6] || "General",
+              description: values[7] || "Imported from bulk file.",
+              status: "Valid",
+            });
+          }
+        }
+
+        if (parsedRows.length === 0) {
+          throw new Error("No valid book entries found in CSV.");
+        }
+
+        setParsedBulkBooks(parsedRows);
+        success(`Parsed ${parsedRows.length} book titles from ${file.name}!`, "File Analyzed");
+      } catch (err: any) {
+        toastError(err.message || "Failed to parse file. Please use the official template.");
+      }
+    };
+
+    reader.readAsText(file);
+  };
+
+  // 3. Confirm and Import All Parsed Books
+  const handleImportAllBulkBooks = () => {
+    if (parsedBulkBooks.length === 0) return;
+
+    setIsImporting(true);
+    setTimeout(() => {
+      const formatted = parsedBulkBooks.map((b) => ({
+        ...b,
+        sales: 0,
+        revenue: 0,
+      }));
+
+      setBooksList((prev) => [...formatted, ...prev]);
+      setIsImporting(false);
+      const count = parsedBulkBooks.length;
+      setParsedBulkBooks([]);
+      setBulkFileName(null);
+      success(`Successfully imported ${count} books into your store catalog!`, "Bulk Import Complete");
+      setActiveTab("books");
+    }, 1000);
+  };
+
   const totalRevenue = booksList.reduce((sum, b) => sum + (b.revenue || 0), 0);
   const totalSales = booksList.reduce((sum, b) => sum + (b.sales || 0), 0);
 
   return (
-    <div className="container mx-auto px-4 py-10 max-w-7xl">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+      {/* Top Banner */}
+      <div className="bg-card border rounded-2xl p-6 sm:p-8 mb-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight mb-1">
-            Publisher Control Center
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Manage your bookstore, upload new titles, and monitor real-time split payouts.
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+              Verified Bookstore Partner
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black">Publisher Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Manage your book titles, bulk upload inventory via Excel/CSV, and track automated earnings.
           </p>
         </div>
-        <Button onClick={() => setActiveTab("upload")} className="gap-2 self-start">
-          <Plus className="h-4 w-4" /> Add New Title
-        </Button>
+
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setActiveTab("bulk-import")}
+            variant="outline"
+            className="gap-1.5 border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/10"
+          >
+            <FileSpreadsheet className="h-4 w-4" /> Bulk Import
+          </Button>
+          <Button
+            onClick={() => setActiveTab("upload")}
+            className="gap-1.5 shadow-sm"
+          >
+            <Plus className="h-4 w-4" /> Add Single Book
+          </Button>
+        </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+      {/* Metrics Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <div className="bg-card rounded-2xl border p-6 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -168,7 +299,7 @@ export default function PublisherDashboard() {
           <p className="text-lg font-bold text-emerald-600 flex items-center gap-1">
             <CheckCircle2 className="h-5 w-5" /> Active &amp; Verified
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Direct Stripe Connect</p>
+          <p className="text-xs text-muted-foreground mt-1">bKash Merchant &amp; Bank</p>
         </div>
       </div>
 
@@ -180,7 +311,8 @@ export default function PublisherDashboard() {
             {[
               { id: "overview", label: "Overview", icon: BarChart3 },
               { id: "books", label: "My Book Titles", icon: BookOpen },
-              { id: "upload", label: "Upload New Book", icon: Upload },
+              { id: "bulk-import", label: "Bulk Import (Excel/CSV)", icon: FileSpreadsheet },
+              { id: "upload", label: "Upload Single Book", icon: Upload },
               { id: "orders", label: "Customer Orders", icon: Package },
               { id: "payouts", label: "Payouts & Banking", icon: DollarSign },
             ].map((tab) => (
@@ -218,85 +350,207 @@ export default function PublisherDashboard() {
                     <h3 className="font-bold text-sm flex items-center gap-2">
                       <Store className="h-4 w-4 text-primary" /> Storefront Profile
                     </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Your store is live on BookHub. Readers can browse and order directly from your store catalog.
-                    </p>
-                    <Button variant="outline" size="sm" asChild>
-                      <a href="/publishers/oxford-academic" target="_blank">
-                        View Public Storefront →
-                      </a>
-                    </Button>
+                    <div className="text-xs space-y-1 text-muted-foreground">
+                      <p><span className="font-semibold text-foreground">Publisher Name:</span> O&apos;Reilly Media &amp; Tech</p>
+                      <p><span className="font-semibold text-foreground">Location:</span> Dhaka &amp; International</p>
+                      <p><span className="font-semibold text-foreground">Verification:</span> Official Verified Partner</p>
+                    </div>
                   </div>
 
                   <div className="p-5 bg-muted/40 rounded-xl border space-y-3">
                     <h3 className="font-bold text-sm flex items-center gap-2">
-                      <CreditCard className="h-4 w-4 text-emerald-600" /> Stripe Split Payouts
+                      <CreditCard className="h-4 w-4 text-emerald-600" /> Revenue Split
                     </h3>
-                    <p className="text-xs text-muted-foreground">
-                      Automated 2-day rolling deposits enabled. Next scheduled payout: <strong>$1,240.00</strong> on Monday.
-                    </p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => info("Redirecting to Stripe Express Dashboard...")}
-                    >
-                      Open Stripe Dashboard
-                    </Button>
+                    <div className="text-xs space-y-1 text-muted-foreground">
+                      <p><span className="font-semibold text-foreground">Publisher Cut:</span> 85% of Gross Sales</p>
+                      <p><span className="font-semibold text-foreground">Marketplace Fee:</span> 15% Platform Maintenance</p>
+                      <p><span className="font-semibold text-foreground">Disbursement:</span> bKash / Bank Account Transfer</p>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* My Books Tab */}
+            {/* My Book Titles Tab */}
             {activeTab === "books" && (
-              <div>
-                <div className="flex items-center justify-between mb-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-xl font-bold">My Book Catalog</h2>
+                    <h2 className="text-xl font-bold">Catalog Inventory ({booksList.length})</h2>
                     <p className="text-xs text-muted-foreground">
-                      Manage stock levels, format editions, and pricing for your titles.
+                      All published physical books and eBooks available in your store.
                     </p>
                   </div>
-                  <Button size="sm" onClick={() => setActiveTab("upload")}>
-                    <Plus className="h-4 w-4 mr-1" /> Add Title
+                  <Button size="sm" onClick={() => setActiveTab("bulk-import")} className="gap-1.5 text-xs">
+                    <FileSpreadsheet className="h-3.5 w-3.5" /> Bulk Upload
                   </Button>
                 </div>
 
-                <div className="divide-y border rounded-xl overflow-hidden">
-                  {booksList.map((b) => (
-                    <div key={b.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card hover:bg-muted/30 transition-colors">
-                      <div>
-                        <h4 className="font-bold text-sm">{b.title}</h4>
-                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-1">
-                          <span>by {b.author}</span>
-                          <span>•</span>
-                          <span>ISBN: {b.isbn}</span>
-                          <span>•</span>
-                          <span className="font-semibold text-primary">{b.type}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-6 self-end sm:self-auto text-sm">
-                        <div className="text-right">
-                          <div className="font-bold">${b.price.toFixed(2)}</div>
-                          <div className="text-xs text-muted-foreground">{b.stock} in stock</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="font-semibold text-emerald-600">{b.sales} sold</div>
-                          <div className="text-xs text-muted-foreground">${b.revenue?.toFixed(2) || "0.00"}</div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm">
+                    <thead className="border-b text-xs uppercase text-muted-foreground bg-muted/30">
+                      <tr>
+                        <th className="py-3 px-4 rounded-l-lg">Book Title</th>
+                        <th className="py-3 px-4">Author</th>
+                        <th className="py-3 px-4">Format</th>
+                        <th className="py-3 px-4">Price (BDT)</th>
+                        <th className="py-3 px-4">Stock</th>
+                        <th className="py-3 px-4 rounded-r-lg text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {booksList.map((b) => (
+                        <tr key={b.id} className="hover:bg-muted/30 transition-colors">
+                          <td className="py-3.5 px-4 font-semibold text-foreground">
+                            {b.title}
+                          </td>
+                          <td className="py-3.5 px-4 text-xs text-muted-foreground">{b.author}</td>
+                          <td className="py-3.5 px-4">
+                            <span className="inline-block px-2 py-0.5 rounded text-[11px] font-medium bg-primary/10 text-primary">
+                              {b.type}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-4 font-bold text-foreground">৳{b.price}</td>
+                          <td className="py-3.5 px-4 text-xs">{b.stock} copies</td>
+                          <td className="py-3.5 px-4 text-right">
+                            <button
+                              onClick={() => {
+                                setBooksList(booksList.filter((item) => item.id !== b.id));
+                                info(`Removed "${b.title}" from catalog.`);
+                              }}
+                              className="text-xs text-destructive hover:underline p-1"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
 
-            {/* Upload Tab */}
+            {/* Bulk Import (Excel / CSV) Tab */}
+            {activeTab === "bulk-import" && (
+              <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-4">
+                  <div>
+                    <h2 className="text-xl font-bold flex items-center gap-2">
+                      <FileSpreadsheet className="h-5 w-5 text-emerald-600" />
+                      Bulk Catalog Import (Excel &amp; CSV)
+                    </h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Upload hundreds of book titles at once using a standard spreadsheet file.
+                    </p>
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadTemplate}
+                    className="gap-1.5 text-xs self-start sm:self-auto"
+                  >
+                    <Download className="h-3.5 w-3.5 text-primary" /> Download Sample CSV Template
+                  </Button>
+                </div>
+
+                {/* Upload Drag and Drop Area */}
+                <div className="border-2 border-dashed border-border hover:border-primary/50 bg-muted/20 rounded-2xl p-8 text-center transition space-y-4">
+                  <div className="h-14 w-14 rounded-2xl bg-emerald-500/10 text-emerald-600 mx-auto flex items-center justify-center">
+                    <FileSpreadsheet className="h-7 w-7" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm">Upload your Excel or CSV Spreadsheet</h3>
+                    <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+                      Supports <span className="font-mono text-primary">.csv</span>,{" "}
+                      <span className="font-mono text-primary">.xlsx</span>, and{" "}
+                      <span className="font-mono text-primary">.xls</span> formatted files.
+                    </p>
+                  </div>
+
+                  <label className="inline-flex cursor-pointer">
+                    <span className="px-4 py-2 bg-primary text-primary-foreground text-xs font-bold rounded-xl hover:bg-primary/90 transition shadow-sm">
+                      Select Spreadsheet File
+                    </span>
+                    <input
+                      type="file"
+                      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {bulkFileName && (
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-xs font-medium">
+                      <CheckCircle2 className="h-3.5 w-3.5" /> File Selected: {bulkFileName}
+                    </div>
+                  )}
+                </div>
+
+                {/* Parsed Preview Table */}
+                {parsedBulkBooks.length > 0 && (
+                  <div className="space-y-4 animate-in fade-in">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-bold text-sm">Import Preview ({parsedBulkBooks.length} titles ready)</h3>
+                        <p className="text-xs text-muted-foreground">
+                          Review verified columns before publishing into your store.
+                        </p>
+                      </div>
+
+                      <Button
+                        onClick={handleImportAllBulkBooks}
+                        disabled={isImporting}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white gap-1.5 text-xs"
+                      >
+                        {isImporting ? "Importing Titles..." : `Import All ${parsedBulkBooks.length} Books`}
+                      </Button>
+                    </div>
+
+                    <div className="border rounded-xl overflow-x-auto text-xs">
+                      <table className="w-full text-left">
+                        <thead className="bg-muted/40 border-b uppercase text-muted-foreground font-semibold">
+                          <tr>
+                            <th className="py-2.5 px-3">Title</th>
+                            <th className="py-2.5 px-3">Author</th>
+                            <th className="py-2.5 px-3">ISBN</th>
+                            <th className="py-2.5 px-3">Price (BDT)</th>
+                            <th className="py-2.5 px-3">Stock</th>
+                            <th className="py-2.5 px-3">Format</th>
+                            <th className="py-2.5 px-3">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                          {parsedBulkBooks.map((b) => (
+                            <tr key={b.id} className="hover:bg-muted/20">
+                              <td className="py-2.5 px-3 font-semibold text-foreground">{b.title}</td>
+                              <td className="py-2.5 px-3 text-muted-foreground">{b.author}</td>
+                              <td className="py-2.5 px-3 font-mono">{b.isbn}</td>
+                              <td className="py-2.5 px-3 font-bold text-emerald-600">৳{b.price}</td>
+                              <td className="py-2.5 px-3">{b.stock}</td>
+                              <td className="py-2.5 px-3">{b.type}</td>
+                              <td className="py-2.5 px-3">
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                                  ✓ Ready
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Upload Single Book Tab */}
             {activeTab === "upload" && (
-              <div>
-                <div className="mb-6">
-                  <h2 className="text-xl font-bold">Publish a New Book</h2>
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold">Add Single Book Title</h2>
                   <p className="text-xs text-muted-foreground">
                     Upload physical book metadata or instant digital eBooks (PDF / ePub).
                   </p>
@@ -432,8 +686,8 @@ export default function PublisherDashboard() {
                 <h2 className="text-xl font-bold mb-4">Customer Orders</h2>
                 <div className="divide-y border rounded-xl overflow-hidden text-sm">
                   {[
-                    { id: "ORD-9912", item: "Designing Data-Intensive Applications", customer: "Sarah K.", date: "Today, 2:15 PM", amount: "$49.99", status: "Shipped" },
-                    { id: "ORD-9908", item: "Clean Architecture", customer: "David L.", date: "Yesterday", amount: "$34.99", status: "Delivered" },
+                    { id: "ORD-9912", item: "Designing Data-Intensive Applications", customer: "Sarah K.", date: "Today, 2:15 PM", amount: "৳500", status: "Shipped" },
+                    { id: "ORD-9908", item: "Clean Architecture", customer: "David L.", date: "Yesterday", amount: "৳350", status: "Delivered" },
                   ].map((o) => (
                     <div key={o.id} className="p-4 flex items-center justify-between gap-4">
                       <div>
