@@ -1,5 +1,32 @@
 const express = require("express")
 const { GracefulShutdownServer } = require("medusa-core-utils")
+const { EntityManager, Repository } = require("typeorm")
+
+// 🛡️ TypeORM safety patch: safely handle empty criteria `{}` used by legacy Medusa v1 services
+if (EntityManager && EntityManager.prototype && EntityManager.prototype.update) {
+  const origUpdate = EntityManager.prototype.update
+  EntityManager.prototype.update = function (target, criteria, partialEntity) {
+    if (criteria && typeof criteria === "object" && Object.keys(criteria).length === 0) {
+      return this.createQueryBuilder()
+        .update(target)
+        .set(partialEntity)
+        .where("1=1")
+        .execute()
+    }
+    return origUpdate.call(this, target, criteria, partialEntity)
+  }
+}
+
+if (Repository && Repository.prototype && Repository.prototype.update) {
+  const origRepoUpdate = Repository.prototype.update
+  Repository.prototype.update = function (criteria, partialEntity) {
+    if (criteria && typeof criteria === "object" && Object.keys(criteria).length === 0) {
+      return this.manager.update(this.target, criteria, partialEntity)
+    }
+    return origRepoUpdate.call(this, criteria, partialEntity)
+  }
+}
+
 const loaders = require("@medusajs/medusa/dist/loaders/index").default
 const { getAdminPortalHTML } = require("./admin-portal")
 

@@ -25,7 +25,8 @@
     "dev": "cross-env npm run build:server && medusa develop"
   },
   "resolutions": {
-    "webpack": "5.88.0"
+    "webpack": "5.88.0",
+    "typeorm": "0.3.15"
   },
   "dependencies": {
     "@babel/runtime": "7.23.6",

@@ -27,7 +27,8 @@
     "install:all": "yarn install"
   },
   "resolutions": {
-    "webpack": "5.88.0"
+    "webpack": "5.88.0",
+    "typeorm": "0.3.15"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
