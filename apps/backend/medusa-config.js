@@ -23,17 +23,19 @@ try {
   console.error("Error loading .env file:", error);
 }
 
-// Default CORS configurations
+// CORS configurations
 const DEFAULT_ADMIN_CORS =
-  "/http://localhost:700d+$/" | "/http://.+/" | "/vercel.app$/";
+  process.env.ADMIN_CORS ||
+  "http://localhost:7000,http://localhost:7001,http://localhost:9000,http://localhost:3000";
 const DEFAULT_STORE_CORS =
-  "/http://localhost:800d+$/" | "/http://.+/" | "/vercel.app$/";
+  process.env.STORE_CORS ||
+  "http://localhost:8000,http://localhost:3000,http://localhost:9000";
 const DEFAULT_AUTH_CORS =
-  "/http://localhost:700d+$/" | "/http://.+/" | "/vercel.app$/";
+  process.env.AUTH_CORS ||
+  "http://localhost:7000,http://localhost:7001,http://localhost:9000,http://localhost:3000";
 const DEFAULT_DATABASE_URL =
-  "postgres://localhost/medusa-starter-default" |
-  "postgres://postgres:Bangla@71@localhost/medusa-fNeN";
-const DEFAULT_REDIS_URL = "";
+  process.env.DATABASE_URL || "postgres://localhost/medusa-starter-default";
+const DEFAULT_REDIS_URL = process.env.REDIS_URL || "";
 
 // Default plugin configurations
 const plugins = [
@@ -50,27 +52,35 @@ const plugins = [
     options: {
       autoRebuild: true,
       develop: {
-        open: process.env.OPEN_BROWSER !== "false",
+        open: false,
       },
     },
   },
 ];
 
-// Default module configurations
-const modules = {
-  eventBus: {
+// Default module configurations (Redis event bus & cache if REDIS_URL is provided)
+const modules = {};
+if (process.env.REDIS_URL) {
+  modules.eventBus = {
     resolve: "@medusajs/event-bus-redis",
     options: {
-      redisUrl: process.env.REDIS_URL || DEFAULT_REDIS_URL,
+      redisUrl: process.env.REDIS_URL,
     },
-  },
-  cacheService: {
+  };
+  modules.cacheService = {
     resolve: "@medusajs/cache-redis",
     options: {
-      redisUrl: process.env.REDIS_URL || DEFAULT_REDIS_URL,
+      redisUrl: process.env.REDIS_URL,
     },
-  },
-};
+  };
+} else {
+  modules.eventBus = {
+    resolve: "@medusajs/event-bus-local",
+  };
+  modules.cacheService = {
+    resolve: "@medusajs/cache-inmemory",
+  };
+}
 
 // Project configuration
 const projectConfig = {

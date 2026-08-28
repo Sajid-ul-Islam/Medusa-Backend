@@ -26,6 +26,9 @@
     "clean": "rm -rf apps/backend/node_modules apps/web/node_modules packages/*/node_modules .next node_modules",
     "install:all": "yarn install"
   },
+  "resolutions": {
+    "webpack": "5.88.0"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
