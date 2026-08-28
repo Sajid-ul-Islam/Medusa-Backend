@@ -83,7 +83,7 @@ export function ProductCard({
         <div className="mt-auto pt-4">
           <div className="flex items-center justify-between">
             <span className="text-lg font-extrabold text-foreground">
-              ${(price / 100).toFixed(2)}
+              ৳{(price / 100).toFixed(0)}
             </span>
             {variantId && (
               <Button

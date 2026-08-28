@@ -264,7 +264,7 @@ export default function BookDetailPage() {
                             {variant.title}
                           </span>
                           <span className="font-bold text-primary">
-                            ${(variant.price / 100).toFixed(2)}
+                            ৳{(variant.price / 100).toFixed(0)}
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground">
@@ -309,7 +309,7 @@ export default function BookDetailPage() {
                 disabled={cartLoading || isAdding}
                 className="flex-1 h-11 text-base font-semibold"
               >
-                {isAdding ? "Adding to Bag..." : `Add to Bag • $${((selectedVariant.price * quantity) / 100).toFixed(2)}`}
+                {isAdding ? "Adding to Bag..." : `Add to Bag • ৳${(((selectedVariant?.price || 0) * quantity) / 100).toFixed(0)}`}
               </Button>
 
               <Button

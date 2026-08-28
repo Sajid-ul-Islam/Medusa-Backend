@@ -131,7 +131,7 @@ export default function CartPage() {
                             {item.title}
                           </h3>
                           <span className="font-bold text-base whitespace-nowrap">
-                            ${(item.total / 100).toFixed(2)}
+                            ৳{(item.total / 100).toFixed(0)}
                           </span>
                         </div>
 
@@ -142,7 +142,7 @@ export default function CartPage() {
                         )}
 
                         <p className="text-xs text-muted-foreground mt-1">
-                          ${(item.unit_price / 100).toFixed(2)} each
+                          ৳{(item.unit_price / 100).toFixed(0)} each
                         </p>
                       </div>
 
@@ -207,12 +207,12 @@ export default function CartPage() {
             <div className="space-y-3 text-sm border-b pb-4 mb-4">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Items Subtotal</span>
-                <span className="font-medium">${(subtotal / 100).toFixed(2)}</span>
+                <span className="font-medium">৳{(subtotal / 100).toFixed(0)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Estimated Shipping</span>
                 <span className="font-medium">
-                  {shipping === 0 ? "FREE" : `$${(shipping / 100).toFixed(2)}`}
+                  {shipping === 0 ? "FREE" : `৳${(shipping / 100).toFixed(0)}`}
                 </span>
               </div>
               <div className="flex justify-between text-xs text-muted-foreground">
@@ -223,7 +223,7 @@ export default function CartPage() {
 
             <div className="flex justify-between font-bold text-lg mb-6">
               <span>Total</span>
-              <span className="text-primary">${(total / 100).toFixed(2)}</span>
+              <span className="text-primary">৳{(total / 100).toFixed(0)}</span>
             </div>
 
             <Button

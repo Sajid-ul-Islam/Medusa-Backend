@@ -31,7 +31,7 @@ export default function AdminDashboardPage() {
       status: "active",
       is_verified: true,
       books_count: 24,
-      total_sales: "$14,280",
+      total_sales: "৳142,800",
     },
     {
       id: "pub_oxford",
@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
       status: "active",
       is_verified: true,
       books_count: 18,
-      total_sales: "$9,450",
+      total_sales: "৳94,500",
     },
     {
       id: "pub_penguin",
@@ -51,7 +51,7 @@ export default function AdminDashboardPage() {
       status: "active",
       is_verified: true,
       books_count: 31,
-      total_sales: "$18,920",
+      total_sales: "৳189,200",
     },
   ]);
 
@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
               <span className="text-xs font-semibold uppercase tracking-wider">Total Gross Sales</span>
               <DollarSign className="h-4 w-4 text-emerald-500" />
             </div>
-            <div className="text-2xl font-black">$42,650.00</div>
+            <div className="text-2xl font-black">৳426,500</div>
             <div className="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
               <TrendingUp className="h-3.5 w-3.5" /> +18.4% this month
             </div>

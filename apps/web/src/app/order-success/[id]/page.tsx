@@ -211,7 +211,7 @@ export default function OrderSuccessPage() {
               </div>
               <div className="flex justify-between border-t pt-2 font-bold text-base">
                 <span>Amount Paid</span>
-                <span className="text-primary">${(order.total / 100).toFixed(2)}</span>
+                <span className="text-primary">৳{(order.total / 100).toFixed(0)}</span>
               </div>
             </div>
           </div>

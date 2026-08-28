@@ -501,7 +501,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <div className="font-bold text-sm">
-                        ${(item.total / 100).toFixed(2)}
+                        ৳{(item.total / 100).toFixed(0)}
                       </div>
                     </div>
                   ))}
@@ -511,15 +511,15 @@ export default function CheckoutPage() {
                 <div className="border-t pt-4 space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Items Subtotal</span>
-                    <span className="font-medium">${(subtotal / 100).toFixed(2)}</span>
+                    <span className="font-medium">৳{(subtotal / 100).toFixed(0)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Shipping Fee</span>
-                    <span className="font-medium">${(shippingCost / 100).toFixed(2)}</span>
+                    <span className="font-medium">৳{(shippingCost / 100).toFixed(0)}</span>
                   </div>
                   <div className="border-t pt-3 flex justify-between font-bold text-lg">
                     <span>Total Amount</span>
-                    <span className="text-primary">${(total / 100).toFixed(2)}</span>
+                    <span className="text-primary">৳{(total / 100).toFixed(0)}</span>
                   </div>
                 </div>
 
@@ -530,7 +530,7 @@ export default function CheckoutPage() {
                   disabled={isProcessing}
                   className="w-full h-12 text-base font-semibold gap-2"
                 >
-                  {isProcessing ? "Authorizing Payment..." : `Pay $${(total / 100).toFixed(2)}`}
+                  {isProcessing ? "Authorizing Payment..." : `Pay ৳${(total / 100).toFixed(0)}`}
                   <CheckCircle2 className="h-5 w-5" />
                 </Button>
 

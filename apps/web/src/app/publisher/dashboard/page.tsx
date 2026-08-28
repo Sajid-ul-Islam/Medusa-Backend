@@ -137,7 +137,7 @@ export default function PublisherDashboard() {
               <DollarSign className="h-5 w-5" />
             </div>
           </div>
-          <p className="text-3xl font-extrabold">${totalRevenue.toFixed(2)}</p>
+          <p className="text-3xl font-extrabold">৳{totalRevenue.toLocaleString()}</p>
           <p className="text-xs text-emerald-600 mt-1 flex items-center gap-1 font-medium">
             <ArrowUpRight className="h-3.5 w-3.5" /> +14.2% from last month
           </p>
@@ -347,12 +347,12 @@ export default function PublisherDashboard() {
 
                     <div>
                       <label className="text-xs font-semibold text-muted-foreground block mb-1">
-                        Selling Price (USD) *
+                        Selling Price (BDT ৳) *
                       </label>
                       <input
                         type="number"
-                        step="0.01"
-                        placeholder="29.99"
+                        step="1"
+                        placeholder="500"
                         required
                         value={newBook.price}
                         onChange={(e) => setNewBook({ ...newBook, price: e.target.value })}
