@@ -46,14 +46,8 @@ const { getAdminPortalHTML } = require("./admin-portal")
     })
 
     // 2. Direct embedded Admin Portal served on Render root & /admin
-    app.get("/", (req, res, next) => {
-      if (req.headers.accept && req.headers.accept.includes("text/html")) {
-        return res.send(getAdminPortalHTML())
-      }
-      next()
-    })
-
-    app.get(["/admin", "/app", "/admin/login"], (req, res) => {
+    app.get(["/", "/admin", "/app", "/admin/login", "/admin/dashboard"], (req, res) => {
+      res.setHeader("Content-Type", "text/html; charset=utf-8")
       res.send(getAdminPortalHTML())
     })
 
