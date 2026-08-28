@@ -454,19 +454,66 @@ export default function PublisherDashboard() {
 
             {/* Payouts Tab */}
             {activeTab === "payouts" && (
-              <div className="space-y-4">
-                <h2 className="text-xl font-bold">Stripe Connect Payouts</h2>
-                <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className="h-6 w-6 text-emerald-600" />
-                    <div>
-                      <div className="font-bold text-sm">Connected Bank Account: Chase Bank (•••• 4812)</div>
-                      <div className="text-xs text-muted-foreground">Automated daily balance transfers enabled</div>
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold">Publisher Revenue &amp; Payout Settings (BDT ৳)</h2>
+                  <p className="text-xs text-muted-foreground">
+                    Direct automated earnings disbursement to your Bangladeshi mobile wallet or bank account.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-xl border bg-card shadow-sm">
+                    <div className="text-xs text-muted-foreground font-semibold">Available for Payout</div>
+                    <div className="text-2xl font-black text-emerald-600 mt-1">৳121,380</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">85% Publisher Share (15% platform commission deducted)</div>
+                  </div>
+                  <div className="p-4 rounded-xl border bg-card shadow-sm">
+                    <div className="text-xs text-muted-foreground font-semibold">Pending Processing</div>
+                    <div className="text-2xl font-black text-amber-600 mt-1">৳21,420</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">Clearing from recent bKash / Card sales</div>
+                  </div>
+                  <div className="p-4 rounded-xl border bg-card shadow-sm">
+                    <div className="text-xs text-muted-foreground font-semibold">Lifetime Paid Out</div>
+                    <div className="text-2xl font-black text-primary mt-1">৳348,900</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">Transferred to your bank/bKash</div>
+                  </div>
+                </div>
+
+                <div className="p-5 bg-card border rounded-2xl space-y-4">
+                  <h3 className="font-bold text-base">Connected Disbursement Account</h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-[#E2136E]/10 text-[#E2136E] font-bold flex items-center justify-center text-xs">
+                          bKash
+                        </div>
+                        <div>
+                          <div className="font-bold text-sm">bKash Merchant Account</div>
+                          <div className="text-xs font-mono text-muted-foreground">+880 1712-998877</div>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/10 text-emerald-600">
+                        Primary
+                      </span>
+                    </div>
+
+                    <div className="p-4 rounded-xl border bg-muted/20 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 font-bold flex items-center justify-center text-xs">
+                          Bank
+                        </div>
+                        <div>
+                          <div className="font-bold text-sm">BRAC Bank Limited</div>
+                          <div className="text-xs font-mono text-muted-foreground">Gulshan Branch • •••• 9214</div>
+                        </div>
+                      </div>
+                      <Button size="sm" variant="ghost" className="text-xs h-7">
+                        Set Primary
+                      </Button>
                     </div>
                   </div>
-                  <Button size="sm" variant="outline">
-                    Edit Account
-                  </Button>
                 </div>
               </div>
             )}
