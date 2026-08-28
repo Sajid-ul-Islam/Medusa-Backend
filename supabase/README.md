@@ -40,3 +40,4 @@ npx supabase db reset
 * **Project ID**: `plltvinvmifjxotzalis`
 * **API URL**: `https://plltvinvmifjxotzalis.supabase.co`
 * **Pooler Host**: `aws-0-ap-southeast-1.pooler.supabase.com:5432`
+
