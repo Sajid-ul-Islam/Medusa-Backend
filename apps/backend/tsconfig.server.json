@@ -5,5 +5,5 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true
   },
-  "exclude": ["src/admin", "**/*.spec.js"]
+  "exclude": ["src/admin", "**/*.spec.js", "node_modules", "dist"]
 }
