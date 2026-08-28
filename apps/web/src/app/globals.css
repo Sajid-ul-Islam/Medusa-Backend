@@ -1,6 +1,54 @@
 @import "tailwindcss";
 
-:root {
+/* 1. Theme: Warm Literary (Default - Amber & Midnight Navy) */
+:root,
+[data-theme="literary"] {
+  --background: #faf8f5;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --primary: #d97706;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f2eb;
+  --secondary-foreground: #292524;
+  --muted: #f5f2eb;
+  --muted-foreground: #78716c;
+  --accent: #fef3c7;
+  --accent-foreground: #92400e;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e7e2d7;
+  --input: #e7e2d7;
+  --ring: #d97706;
+}
+
+/* 2. Theme: Oxford Forest & Emerald */
+[data-theme="emerald"] {
+  --background: #fbfbf9;
+  --foreground: #064e3b;
+  --card: #ffffff;
+  --card-foreground: #064e3b;
+  --popover: #ffffff;
+  --popover-foreground: #064e3b;
+  --primary: #059669;
+  --primary-foreground: #ffffff;
+  --secondary: #f0fdf4;
+  --secondary-foreground: #065f46;
+  --muted: #f0fdf4;
+  --muted-foreground: #047857;
+  --accent: #d1fae5;
+  --accent-foreground: #065f46;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #d1fae5;
+  --input: #d1fae5;
+  --ring: #059669;
+}
+
+/* 3. Theme: Modern Minimalist Indigo */
+[data-theme="indigo"] {
   --background: #ffffff;
   --foreground: #09090b;
   --card: #ffffff;
@@ -13,37 +61,13 @@
   --secondary-foreground: #18181b;
   --muted: #f4f4f5;
   --muted-foreground: #71717a;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
+  --accent: #e0e7ff;
+  --accent-foreground: #3730a3;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #e4e4e7;
   --input: #e4e4e7;
   --ring: #4f46e5;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b;
-    --foreground: #fafafa;
-    --card: #121215;
-    --card-foreground: #fafafa;
-    --popover: #121215;
-    --popover-foreground: #fafafa;
-    --primary: #6366f1;
-    --primary-foreground: #ffffff;
-    --secondary: #27272a;
-    --secondary-foreground: #fafafa;
-    --muted: #27272a;
-    --muted-foreground: #a1a1aa;
-    --accent: #27272a;
-    --accent-foreground: #fafafa;
-    --destructive: #7f1d1d;
-    --destructive-foreground: #fafafa;
-    --border: #27272a;
-    --input: #27272a;
-    --ring: #6366f1;
-  }
 }
 
 @theme inline {
@@ -71,4 +95,5 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

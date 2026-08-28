@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ShoppingCart, BookOpen, Store, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 
 export function Header() {
   const router = useRouter();
@@ -71,8 +72,10 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Action Buttons & Cart */}
+        {/* Action Buttons, Theme Switcher & Cart */}
         <div className="flex items-center space-x-3">
+          <ThemeSwitcher />
+
           <Link href="/cart">
             <Button variant="ghost" size="icon" className="relative" aria-label="Shopping Cart">
               <ShoppingCart className="h-5 w-5" />
