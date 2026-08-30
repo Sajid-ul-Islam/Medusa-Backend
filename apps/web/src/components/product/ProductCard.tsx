@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/components/ui/toast";
 import { Heart, Sparkles, Feather } from "lucide-react";
+import { formatPrice, safeGetStorage, safeSetStorage } from "@/lib/utils";
 
 interface ProductCardProps {
   id: string;
@@ -37,14 +38,9 @@ export function ProductCard({
   const [isWishlisted, setIsWishlisted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("bookhub_wishlist");
-    if (saved) {
-      try {
-        const list = JSON.parse(saved);
-        if (list.includes(id)) {
-          setIsWishlisted(true);
-        }
-      } catch (e) {}
+    const list = safeGetStorage<string[]>("bookhub_wishlist", []);
+    if (list.includes(id)) {
+      setIsWishlisted(true);
     }
   }, [id]);
 
@@ -52,8 +48,7 @@ export function ProductCard({
     e.preventDefault();
     e.stopPropagation();
 
-    const saved = localStorage.getItem("bookhub_wishlist");
-    let list: string[] = saved ? JSON.parse(saved) : [];
+    let list = safeGetStorage<string[]>("bookhub_wishlist", []);
 
     if (isWishlisted) {
       list = list.filter((item) => item !== id);
@@ -65,7 +60,7 @@ export function ProductCard({
       success(`Saved "${title}" to your personal bookshelf wishlist!`, "Added to Wishlist");
     }
 
-    localStorage.setItem("bookhub_wishlist", JSON.stringify(list));
+    safeSetStorage("bookhub_wishlist", list);
   };
 
   const handleAddToCart = async (e: React.MouseEvent) => {
@@ -145,7 +140,7 @@ export function ProductCard({
         <div className="mt-auto pt-4">
           <div className="flex items-center justify-between">
             <span className="text-lg font-extrabold text-foreground">
-              ৳{(price / 100).toFixed(0)}
+              {formatPrice(price)}
             </span>
             {variantId && (
               <Button

@@ -20,6 +20,7 @@ import {
   Gift,
   CheckCircle2,
 } from "lucide-react";
+import { formatPrice } from "@/lib/utils";
 
 const FREE_DELIVERY_THRESHOLD = 150000; // ৳1,500 in poisha
 
@@ -39,6 +40,22 @@ export function CartDrawer() {
 
   const [isGift, setIsGift] = useState(false);
   const [giftNote, setGiftNote] = useState("");
+
+  // Restore saved voucher and gift options on mount
+  useEffect(() => {
+    try {
+      const savedDiscount = sessionStorage.getItem("bookhub_applied_discount");
+      if (savedDiscount) {
+        setAppliedDiscount(JSON.parse(savedDiscount));
+      }
+      const savedGift = sessionStorage.getItem("bookhub_gift_option");
+      if (savedGift) {
+        const parsed = JSON.parse(savedGift);
+        setIsGift(Boolean(parsed.isGift));
+        if (parsed.giftNote) setGiftNote(parsed.giftNote);
+      }
+    } catch (e) {}
+  }, []);
 
   // Close drawer on Escape key
   useEffect(() => {
@@ -193,11 +210,11 @@ export function CartDrawer() {
                           {item.title}
                         </h4>
                         <span className="font-bold text-xs text-primary whitespace-nowrap">
-                          ৳{(item.total / 100).toFixed(0)}
+                          {formatPrice(item.total)}
                         </span>
                       </div>
                       <p className="text-[11px] text-muted-foreground mt-0.5">
-                        ৳{(item.unit_price / 100).toFixed(0)} each
+                        {formatPrice(item.unit_price)} each
                       </p>
                       {item.format && (
                         <span className="inline-block text-[10px] font-medium text-muted-foreground mt-0.5">
@@ -324,12 +341,12 @@ export function CartDrawer() {
               <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between text-muted-foreground">
                   <span>Subtotal</span>
-                  <span>৳{(subtotal / 100).toFixed(0)}</span>
+                  <span>{formatPrice(subtotal)}</span>
                 </div>
                 {appliedDiscount && (
                   <div className="flex justify-between text-emerald-600 font-semibold">
                     <span>Discount ({appliedDiscount.code})</span>
-                    <span>-৳{(appliedDiscount.discountTotal / 100).toFixed(0)}</span>
+                    <span>-{formatPrice(appliedDiscount.discountTotal)}</span>
                   </div>
                 )}
                 {isGift && (
@@ -340,7 +357,7 @@ export function CartDrawer() {
                 )}
                 <div className="flex justify-between font-extrabold text-sm text-foreground pt-1 border-t">
                   <span>Total Payable</span>
-                  <span className="text-primary font-black">৳{(total / 100).toFixed(0)}</span>
+                  <span className="text-primary font-black">{formatPrice(total)}</span>
                 </div>
               </div>
 
