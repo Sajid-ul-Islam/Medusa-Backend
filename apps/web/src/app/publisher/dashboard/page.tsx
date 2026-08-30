@@ -25,12 +25,16 @@ import {
   Globe,
   Sparkles,
   Share2,
+  Crown,
+  Zap,
+  ShieldCheck as ShieldIcon,
 } from "lucide-react";
 
 export default function PublisherDashboard() {
   const { success, info, error: toastError } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const [isDesktopMode, setIsDesktopMode] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<"starter" | "pro" | "enterprise">("pro");
 
   const [storefrontProfile, setStorefrontProfile] = useState({
     name: "Batighar Publications (বাতিঘর)",
@@ -363,6 +367,7 @@ export default function PublisherDashboard() {
               { id: "overview", label: "Overview", icon: BarChart3 },
               { id: "books", label: "My Book Titles", icon: BookOpen },
               { id: "storefront-customizer", label: "Storefront & Branding", icon: Palette },
+              { id: "subscription", label: "SaaS Plans & Billing", icon: Crown },
               { id: "bulk-import", label: "Bulk Import (Excel/CSV)", icon: FileSpreadsheet },
               { id: "upload", label: "Upload Single Book", icon: Upload },
               { id: "orders", label: "Customer Orders", icon: Package },
@@ -1088,6 +1093,271 @@ export default function PublisherDashboard() {
                     </Button>
                   </div>
                 </form>
+              </div>
+            )}
+
+            {/* SaaS Subscription & Plans Tab */}
+            {activeTab === "subscription" && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-amber-500" /> SaaS Publisher Plans &amp; Billing
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Choose the plan that fits your publishing volume. Lower platform cuts and unlock dedicated custom subdomains.
+                  </p>
+                </div>
+
+                {/* Plan Comparison Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {/* Starter Tier */}
+                  <div
+                    className={`p-5 rounded-2xl border flex flex-col justify-between transition-all ${
+                      currentPlan === "starter"
+                        ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-md"
+                        : "bg-card hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+                          Starter
+                        </span>
+                        {currentPlan === "starter" && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-primary text-primary-foreground">
+                            Active Plan
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-2xl font-black">৳0</span>
+                        <span className="text-xs text-muted-foreground"> / month</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        For independent authors and small presses starting out.
+                      </p>
+
+                      <ul className="mt-4 space-y-2 text-xs text-muted-foreground border-t pt-4">
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>15% Marketplace Commission</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Up to 25 Book Titles</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Standard Marketplace Listing</span>
+                        </li>
+                        <li className="flex items-center gap-2 text-muted-foreground/60">
+                          <span>✕ Custom Subdomain</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-6">
+                      <Button
+                        variant={currentPlan === "starter" ? "outline" : "secondary"}
+                        disabled={currentPlan === "starter"}
+                        onClick={() => {
+                          setCurrentPlan("starter");
+                          success("Switched to Starter Plan (15% Commission)", "Plan Updated");
+                        }}
+                        className="w-full text-xs font-bold"
+                      >
+                        {currentPlan === "starter" ? "Current Tier" : "Downgrade to Starter"}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Pro Publisher Tier (Most Popular) */}
+                  <div
+                    className={`p-5 rounded-2xl border flex flex-col justify-between transition-all relative ${
+                      currentPlan === "pro"
+                        ? "border-primary bg-primary/5 ring-2 ring-primary/30 shadow-xl"
+                        : "bg-card hover:border-primary/40 shadow-sm"
+                    }`}
+                  >
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground font-black text-[10px] uppercase px-3 py-0.5 rounded-full shadow-sm">
+                      ⚡ Most Popular
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-black uppercase tracking-wider text-primary">
+                          Pro Publisher
+                        </span>
+                        {currentPlan === "pro" && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-600 text-white">
+                            Active Plan
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-2xl font-black">৳1,499</span>
+                        <span className="text-xs text-muted-foreground"> / month</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        For professional publishing houses scaling sales.
+                      </p>
+
+                      <ul className="mt-4 space-y-2 text-xs text-foreground border-t pt-4">
+                        <li className="flex items-center gap-2 font-bold text-primary">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <span>8% Reduced Platform Cut</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Unlimited Book Catalog Titles</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Branded Subdomain (pub.bookhub.bd)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>48-Hour Direct bKash Payouts</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Priority Pathao Doorstep Pickup</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-6">
+                      <Button
+                        variant={currentPlan === "pro" ? "outline" : "default"}
+                        disabled={currentPlan === "pro"}
+                        onClick={() => {
+                          setCurrentPlan("pro");
+                          success("Upgraded to Pro Publisher Plan (8% Commission)", "Plan Upgraded");
+                        }}
+                        className="w-full text-xs font-bold shadow-sm"
+                      >
+                        {currentPlan === "pro" ? "Current Tier" : "Upgrade to Pro"}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Enterprise Flagship Tier */}
+                  <div
+                    className={`p-5 rounded-2xl border flex flex-col justify-between transition-all ${
+                      currentPlan === "enterprise"
+                        ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-md"
+                        : "bg-card hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                          Enterprise Flagship
+                        </span>
+                        {currentPlan === "enterprise" && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-amber-950">
+                            Active Plan
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-2xl font-black">৳4,999</span>
+                        <span className="text-xs text-muted-foreground"> / month</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        For top-tier national publishers &amp; Boi Mela institutions.
+                      </p>
+
+                      <ul className="mt-4 space-y-2 text-xs text-muted-foreground border-t pt-4">
+                        <li className="flex items-center gap-2 font-bold text-amber-600 dark:text-amber-400">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-amber-500 flex-shrink-0" />
+                          <span>4% Lowest Platform Cut</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Own Custom Domain (books.pub.com)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Instant Real-Time Bank Settlement</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Dedicated DRM Dynamic Watermarking</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Bulk Barcode Waybill Manifest Printer</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-6">
+                      <Button
+                        variant={currentPlan === "enterprise" ? "outline" : "default"}
+                        disabled={currentPlan === "enterprise"}
+                        onClick={() => {
+                          setCurrentPlan("enterprise");
+                          success("Upgraded to Enterprise Flagship (4% Commission)", "Plan Upgraded");
+                        }}
+                        className="w-full text-xs font-bold"
+                      >
+                        {currentPlan === "enterprise" ? "Current Tier" : "Upgrade to Enterprise"}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Billing Receipts & Invoice History */}
+                <div className="p-5 bg-card border rounded-2xl shadow-xs space-y-3 pt-4">
+                  <h3 className="font-bold text-sm">Monthly Subscription Billing History</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs text-left">
+                      <thead className="bg-muted/40 text-muted-foreground uppercase text-[10px] font-bold">
+                        <tr>
+                          <th className="p-2.5 rounded-l-lg">Invoice ID</th>
+                          <th className="p-2.5">Date</th>
+                          <th className="p-2.5">Plan</th>
+                          <th className="p-2.5">Amount</th>
+                          <th className="p-2.5">Payment Method</th>
+                          <th className="p-2.5 rounded-r-lg text-right">Receipt</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/50 font-mono">
+                        <tr>
+                          <td className="p-2.5 font-bold">INV-2026-0801</td>
+                          <td className="p-2.5">Aug 1, 2026</td>
+                          <td className="p-2.5 font-sans font-semibold text-primary">Pro Publisher</td>
+                          <td className="p-2.5 font-bold">৳1,499.00</td>
+                          <td className="p-2.5 font-sans">bKash Auto-Debit (•••• 9988)</td>
+                          <td className="p-2.5 text-right">
+                            <button
+                              onClick={() => info("Invoice PDF downloaded")}
+                              className="text-primary hover:underline font-bold"
+                            >
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">INV-2026-0701</td>
+                          <td className="p-2.5">Jul 1, 2026</td>
+                          <td className="p-2.5 font-sans font-semibold text-primary">Pro Publisher</td>
+                          <td className="p-2.5 font-bold">৳1,499.00</td>
+                          <td className="p-2.5 font-sans">bKash Auto-Debit (•••• 9988)</td>
+                          <td className="p-2.5 text-right">
+                            <button
+                              onClick={() => info("Invoice PDF downloaded")}
+                              className="text-primary hover:underline font-bold"
+                            >
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             )}
           </div>
