@@ -30,6 +30,58 @@ export const removeCartId = () => {
 // Curated sample publishers for marketplace
 export const SAMPLE_PUBLISHERS = [
   {
+    id: "pub_guardian",
+    name: "Guardian Publications (গার্ডিয়ান পাবলিকেশন)",
+    handle: "guardian-publications",
+    description:
+      "Leading publisher of contemporary Islamic research, Seerah literature, spiritual purification, and youth development books.",
+    store_name: "Guardian Publications",
+    logo_url: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80",
+    banner_url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80",
+    verified: true,
+    total_books: 180,
+    location: "Banglabazar, Dhaka, Bangladesh",
+  },
+  {
+    id: "pub_somokalin",
+    name: "Somokalin Prokashon (সমকালীন প্রকাশন)",
+    handle: "somokalin-prokashon",
+    description:
+      "Celebrated publisher of Arif Azad's bestsellers (Paradoxical Sajid), youth motivation, and modern lifestyle literature.",
+    store_name: "Somokalin Prokashon",
+    logo_url: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?auto=format&fit=crop&w=300&q=80",
+    banner_url: "https://images.unsplash.com/photo-1507842229451-2b0e6c51804b?auto=format&fit=crop&w=1200&q=80",
+    verified: true,
+    total_books: 125,
+    location: "Banglabazar, Dhaka, Bangladesh",
+  },
+  {
+    id: "pub_islamic_foundation",
+    name: "Islamic Foundation Bangladesh (ইসলামিক ফাউন্ডেশন)",
+    handle: "islamic-foundation",
+    description:
+      "Official statutory authority publishing authentic Quranic exegesis (Tafsir), Sahih Hadith encyclopedias, and Islamic jurisprudence.",
+    store_name: "Islamic Foundation Bangladesh",
+    logo_url: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=300&q=80",
+    banner_url: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80",
+    verified: true,
+    total_books: 450,
+    location: "Agargaon, Dhaka, Bangladesh",
+  },
+  {
+    id: "pub_shian",
+    name: "Shian Publications (শিয়ান পাবলিকেশন)",
+    handle: "shian-publications",
+    description:
+      "Prestigious publisher of Islamic history, spirituality, classical Arabic translations, and Tazkiyah literature.",
+    store_name: "Shian Publications",
+    logo_url: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=300&q=80",
+    banner_url: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=1200&q=80",
+    verified: true,
+    total_books: 95,
+    location: "Purana Paltan, Dhaka, Bangladesh",
+  },
+  {
     id: "pub_batighar",
     name: "Batighar Publications (বাতিঘর)",
     handle: "batighar-publications",
