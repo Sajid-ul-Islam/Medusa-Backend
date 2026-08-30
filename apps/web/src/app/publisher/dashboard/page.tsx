@@ -21,12 +21,28 @@ import {
   Trash2,
   Monitor,
   Smartphone,
+  Palette,
+  Globe,
+  Sparkles,
+  Share2,
 } from "lucide-react";
 
 export default function PublisherDashboard() {
   const { success, info, error: toastError } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const [isDesktopMode, setIsDesktopMode] = useState(false);
+
+  const [storefrontProfile, setStorefrontProfile] = useState({
+    name: "Batighar Publications (বাতিঘর)",
+    tagline: "Premier Bengali Literature & World Translations",
+    bio: "Batighar is an iconic Bangladeshi publishing house celebrating rich Bengali novels, world translations, poetry collections, and Amar Ekushey Boi Mela special releases.",
+    location: "Banglabazar, Dhaka & Anderkilla, Chattogram",
+    logoUrl: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=300&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80",
+    facebook: "facebook.com/batigharbd",
+    website: "https://batighar.com",
+    phone: "+880 1712-345678",
+  });
 
   const [booksList, setBooksList] = useState<any[]>([
     {
@@ -346,6 +362,7 @@ export default function PublisherDashboard() {
             {[
               { id: "overview", label: "Overview", icon: BarChart3 },
               { id: "books", label: "My Book Titles", icon: BookOpen },
+              { id: "storefront-customizer", label: "Storefront & Branding", icon: Palette },
               { id: "bulk-import", label: "Bulk Import (Excel/CSV)", icon: FileSpreadsheet },
               { id: "upload", label: "Upload Single Book", icon: Upload },
               { id: "orders", label: "Customer Orders", icon: Package },
@@ -894,6 +911,183 @@ export default function PublisherDashboard() {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Storefront & Branding Customizer Tab */}
+            {activeTab === "storefront-customizer" && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-primary" /> Storefront Branding &amp; Customization
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Customize how your bookstore looks to thousands of readers on the BookHub marketplace.
+                  </p>
+                </div>
+
+                {/* Live Storefront Preview Card */}
+                <div className="p-5 bg-card border rounded-2xl shadow-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <Sparkles className="h-3.5 w-3.5 text-primary" /> Live Customer Storefront Preview
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-mono">
+                      https://bookhub.com.bd/publishers/{storefrontProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}
+                    </span>
+                  </div>
+
+                  {/* Visual Preview Canvas */}
+                  <div className="border rounded-2xl overflow-hidden shadow-sm">
+                    <div
+                      className="h-28 sm:h-36 bg-cover bg-center relative"
+                      style={{ backgroundImage: `url(${storefrontProfile.bannerUrl})` }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                      <div className="absolute bottom-3 left-4 right-4 flex items-end gap-3">
+                        <img
+                          src={storefrontProfile.logoUrl}
+                          alt="Store Logo"
+                          className="h-14 w-14 rounded-xl border-2 border-white object-cover bg-white shadow-md"
+                        />
+                        <div className="text-white min-w-0">
+                          <h3 className="font-extrabold text-base truncate flex items-center gap-1.5">
+                            {storefrontProfile.name}
+                            <CheckCircle2 className="h-4 w-4 text-emerald-400 fill-emerald-400 text-white flex-shrink-0" />
+                          </h3>
+                          <p className="text-xs text-white/80 truncate">{storefrontProfile.tagline}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-card text-xs space-y-2">
+                      <p className="text-muted-foreground leading-relaxed">{storefrontProfile.bio}</p>
+                      <div className="flex flex-wrap items-center gap-4 text-muted-foreground pt-1 border-t">
+                        <span>📍 {storefrontProfile.location}</span>
+                        <span>🌐 {storefrontProfile.website}</span>
+                        <span>📘 {storefrontProfile.facebook}</span>
+                        <span>📞 {storefrontProfile.phone}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Form Fields */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    success("Storefront branding updated and published!", "Profile Saved");
+                  }}
+                  className="space-y-4 pt-2 border-t"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Bookstore Brand Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={storefrontProfile.name}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, name: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Store Tagline / Slogan
+                      </label>
+                      <input
+                        type="text"
+                        value={storefrontProfile.tagline}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, tagline: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Store Bio &amp; About Us Story *
+                      </label>
+                      <textarea
+                        rows={3}
+                        required
+                        value={storefrontProfile.bio}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, bio: e.target.value })
+                        }
+                        className="w-full p-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Logo Image URL
+                      </label>
+                      <input
+                        type="url"
+                        value={storefrontProfile.logoUrl}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, logoUrl: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Storefront Banner Image URL
+                      </label>
+                      <input
+                        type="url"
+                        value={storefrontProfile.bannerUrl}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, bannerUrl: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Physical Store / Office Location in Bangladesh
+                      </label>
+                      <input
+                        type="text"
+                        value={storefrontProfile.location}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, location: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Official Facebook Page
+                      </label>
+                      <input
+                        type="text"
+                        value={storefrontProfile.facebook}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, facebook: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-3">
+                    <Button type="submit" className="gap-1.5 shadow-sm font-bold">
+                      <Sparkles className="h-4 w-4" /> Save Storefront Branding
+                    </Button>
+                  </div>
+                </form>
               </div>
             )}
           </div>
