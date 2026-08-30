@@ -94,6 +94,71 @@ async function enrichDatabase() {
       is_verified: true,
       status: "active",
     },
+    {
+      id: "pub_somoy",
+      name: "Somoy Prokashon (সময় প্রকাশন)",
+      email: "info@somoyprokashon.com",
+      handle: "somoy-prokashon",
+      store_name: "Somoy Prokashon",
+      description: "Pioneering publisher of iconic science fiction, popular thrillers, and Ekushey Boi Mela bestsellers.",
+      location: "Banglabazar, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_anyaprokash",
+      name: "Anyaprokash (অন্যপ্রকাশ)",
+      email: "contact@anyaprokash.com",
+      handle: "anyaprokash",
+      store_name: "Anyaprokash",
+      description: "Historic prestigious home of Humayun Ahmed masterpieces, contemporary novels, and Bengali cultural literature.",
+      location: "Purana Paltan, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1524578271613-d550eacf6090?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1507842229451-2b0e6c51804b?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_tamralipi",
+      name: "Tamralipi (তাম্রলিপি)",
+      email: "sales@tamralipi.com",
+      handle: "tamralipi",
+      store_name: "Tamralipi",
+      description: "Leading publisher of children's literature, young adult fiction, translations, and science encyclopedias.",
+      location: "Purana Paltan, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_mit_press",
+      name: "MIT Press & Computing",
+      email: "info@mitpress.mit.edu",
+      handle: "mit-press",
+      store_name: "MIT Press & Computing",
+      description: "World authority in Algorithms, Deep Learning, Cryptography, Computational Theory, and Open Science.",
+      location: "Cambridge, Massachusetts, USA",
+      logo_url: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_harpercollins",
+      name: "HarperCollins Classics",
+      email: "contact@harpercollins.com",
+      handle: "harpercollins-classics",
+      store_name: "HarperCollins Classics",
+      description: "One of the world's greatest publishing houses bringing inspiring fiction, biographies, and timeless wisdom.",
+      location: "New York, USA",
+      logo_url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1507842229451-2b0e6c51804b?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
   ];
 
   // Hash password for publishers (publisher123)
@@ -132,7 +197,7 @@ async function enrichDatabase() {
       ]
     );
   }
-  console.log("✔ 6 Verified Publishers Seeded!");
+  console.log(`✔ ${publishers.length} Verified Publishing Houses Seeded!`);
 
   // 2. Enrich Book Catalog (Medusa Products + Variants + BDT Prices)
   const books = [
@@ -165,6 +230,48 @@ async function enrichDatabase() {
       ebook_price: 50000,      // ৳500.00
     },
     {
+      id: "prod_grokking_algo",
+      title: "Grokking Algorithms: An Illustrated Guide",
+      subtitle: "For Programmers and Other Curious People",
+      handle: "grokking-algorithms-illustrated-guide",
+      description: "A friendly, fully illustrated guide that teaches you how to apply common algorithms to practical programming problems.",
+      thumbnail: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_oreilly",
+      author: "Aditya Y. Bhargava",
+      isbn: "978-1617292231",
+      categories: ["Technology", "Algorithms", "Computer Science"],
+      hardcover_price: 85000,  // ৳850.00
+      ebook_price: 45000,      // ৳450.00
+    },
+    {
+      id: "prod_clrs_algo",
+      title: "Introduction to Algorithms (CLRS 4th Edition)",
+      subtitle: "The Comprehensive Standard Algorithms Textbook",
+      handle: "introduction-to-algorithms-clrs-4th-edition",
+      description: "The leading algorithms text in universities worldwide, covering graph theory, dynamic programming, and greedy heuristics.",
+      thumbnail: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_mit_press",
+      author: "Cormen, Leiserson, Rivest & Stein",
+      isbn: "978-0262046305",
+      categories: ["Academic", "Algorithms", "Computer Science"],
+      hardcover_price: 220000, // ৳2,200.00
+      ebook_price: 95000,      // ৳950.00
+    },
+    {
+      id: "prod_deep_learning_mit",
+      title: "Deep Learning (Adaptive Computation and Machine Learning)",
+      subtitle: "The definitive mathematical and algorithmic reference on neural networks",
+      handle: "deep-learning-mit-press-goodfellow",
+      description: "The seminal textbook on deep learning by Yoshua Bengio, Ian Goodfellow, and Aaron Courville.",
+      thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_mit_press",
+      author: "Ian Goodfellow & Yoshua Bengio",
+      isbn: "978-0262035613",
+      categories: ["Academic", "Artificial Intelligence", "Deep Learning"],
+      hardcover_price: 195000, // ৳1,950.00
+      ebook_price: 85000,      // ৳850.00
+    },
+    {
       id: "prod_ai_modern",
       title: "Artificial Intelligence: A Modern Approach (4th Ed)",
       subtitle: "The Authoritative introduction to AI theory and neural systems",
@@ -193,6 +300,20 @@ async function enrichDatabase() {
       ebook_price: 70000,      // ৳700.00
     },
     {
+      id: "prod_atomic_habits",
+      title: "Atomic Habits: Tiny Changes, Remarkable Results",
+      subtitle: "An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+      handle: "atomic-habits-james-clear",
+      description: "Over 15 million copies sold. The definitive framework for improving 1% every day by James Clear.",
+      thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_penguin",
+      author: "James Clear",
+      isbn: "978-0735211292",
+      categories: ["Self-Improvement", "Productivity", "Non-Fiction"],
+      hardcover_price: 75000,  // ৳750.00
+      ebook_price: 38000,      // ৳380.00
+    },
+    {
       id: "prod_sapiens",
       title: "Sapiens: A Brief History of Humankind",
       subtitle: "From the Cognitive Revolution to Artificial Intelligence",
@@ -205,6 +326,20 @@ async function enrichDatabase() {
       categories: ["History", "Anthropology", "Non-Fiction"],
       hardcover_price: 85000,  // ৳850.00
       ebook_price: 45000,      // ৳450.00
+    },
+    {
+      id: "prod_alchemist",
+      title: "The Alchemist (Collector's Illustrated Edition)",
+      subtitle: "A Fable About Following Your Dream",
+      handle: "the-alchemist-paulo-coelho",
+      description: "Paulo Coelho's masterpiece tells the mystical story of Santiago, an Andalusian shepherd boy who yearns to travel in search of worldly treasure.",
+      thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_harpercollins",
+      author: "Paulo Coelho",
+      isbn: "978-0062315007",
+      categories: ["Fiction", "Philosophy", "Classics"],
+      hardcover_price: 48000,  // ৳480.00
+      ebook_price: 22000,      // ৳220.00
     },
     {
       id: "prod_great_gatsby",
@@ -235,6 +370,76 @@ async function enrichDatabase() {
       ebook_price: 15000,      // ৳150.00
     },
     {
+      id: "prod_dipaboli",
+      title: "দীপাবলি (Dipaboli Trilogy)",
+      subtitle: "গর্ভধারিণী, উত্তরাধিকার ও কালবেলা সংকলন",
+      handle: "dipaboli-samaresh-majumdar",
+      description: "সমরেশ মজুমদারের অমর উপন্যাস সংকলন। অনিমেষ ও মাধবীলতার অবিস্মরণীয় জীবনের আখ্যান।",
+      thumbnail: "https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_batighar",
+      author: "সমরেশ মজুমদার (Samaresh Majumdar)",
+      isbn: "978-9848981123",
+      categories: ["Bengali Literature", "Classics", "Fiction"],
+      hardcover_price: 65000,  // ৳650.00
+      ebook_price: 30000,      // ৳300.00
+    },
+    {
+      id: "prod_jochhona",
+      title: "জোছনা ও জননীর গল্প (Jochhona O Jononir Golpo)",
+      subtitle: "মুক্তিযুদ্ধের অমর ও মহাকাব্যিক আখ্যান",
+      handle: "jochhona-o-jononir-golpo-humayun-ahmed",
+      description: "হুমায়ূন আহমেদের জীবনের সর্বশ্রেষ্ঠ উপন্যাস। ১৯৭১ সালের মুক্তিযুদ্ধের লোমহর্ষক ও বীরত্বপূর্ণ মহাকাব্যিক চিত্র।",
+      thumbnail: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_anyaprokash",
+      author: "হুমায়ূন আহমেদ (Humayun Ahmed)",
+      isbn: "978-9848682211",
+      categories: ["Liberation War", "Bengali Literature", "Epic Novels"],
+      hardcover_price: 75000,  // ৳750.00
+      ebook_price: 35000,      // ৳350.00
+    },
+    {
+      id: "prod_shongkhonil",
+      title: "শঙ্খনীল কারাগার (Shongkhonil Karagar)",
+      subtitle: "মধ্যবিত্ত জীবনের নিখুঁত দর্পণ",
+      handle: "shongkhonil-karagar-humayun-ahmed",
+      description: "হুমায়ূন আহমেদের বাংলা সাহিত্যের অন্যতম শ্রেষ্ঠ সৃষ্টি ও মধ্যবিত্ত পারিবারিক সম্পর্কের মর্মস্পর্শী উপন্যাস।",
+      thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_anyaprokash",
+      author: "হুমায়ূন আহমেদ (Humayun Ahmed)",
+      isbn: "978-9848681109",
+      categories: ["Bengali Literature", "Drama", "Fiction"],
+      hardcover_price: 32000,  // ৳320.00
+      ebook_price: 15000,      // ৳150.00
+    },
+    {
+      id: "prod_brishti_scifi",
+      title: "বৃষ্টি ও মেঘমালা (Sci-Fi Classic)",
+      subtitle: "ভবিষ্যত পৃথিবীর রোমাঞ্চকর বৈজ্ঞানিক কল্পকাহিনী",
+      handle: "brishti-o-meghmala-zafar-iqbal",
+      description: "মুহম্মদ জাফর ইকবালের অমর সায়েন্স ফিকশন উপন্যাস। ভবিষ্যত পৃথিবী, কৃত্রিম বুদ্ধিমত্তা ও মহাজাগতিক রহস্য।",
+      thumbnail: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_somoy",
+      author: "মুহম্মদ জাফর ইকবাল (Muhammad Zafar Iqbal)",
+      isbn: "978-9844583321",
+      categories: ["Science Fiction", "Bengali Literature", "Thriller"],
+      hardcover_price: 28000,  // ৳280.00
+      ebook_price: 14000,      // ৳140.00
+    },
+    {
+      id: "prod_tuntuni",
+      title: "দীপু নাম্বার টু (Dipu Number Two)",
+      subtitle: "কিশোর ক্লাসিক রোমাঞ্চ উপন্যাস",
+      handle: "dipu-number-two-zafar-iqbal",
+      description: "মুহম্মদ জাফর ইকবালের বহুল পঠিত কিশোর রোমাঞ্চকর উপন্যাস। বন্ধুত্ব, সাহস ও আত্মবিশ্বাসের অনন্য গল্প।",
+      thumbnail: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_tamralipi",
+      author: "মুহম্মদ জাফর ইকবাল (Muhammad Zafar Iqbal)",
+      isbn: "978-9844580019",
+      categories: ["Young Adult", "Adventures", "Fiction"],
+      hardcover_price: 30000,  // ৳300.00
+      ebook_price: 15000,      // ৳150.00
+    },
+    {
       id: "prod_ekattor",
       title: "একাত্তরের দিনগুলি (Ekattorer Dinguli)",
       subtitle: "মুক্তিযুদ্ধের অমর দিনলিপি ও শহীদ জননীর দলিল",
@@ -246,6 +451,20 @@ async function enrichDatabase() {
       isbn: "978-9844650012",
       categories: ["History", "Liberation War", "Memoirs"],
       hardcover_price: 45000,  // ৳450.00
+      ebook_price: 20000,      // ৳200.00
+    },
+    {
+      id: "prod_cratch",
+      title: "ক্রাচের কর্নেল (Cratcher Colonel)",
+      subtitle: "কর্নেল তাহের ও বাংলাদেশের রাজনীতি",
+      handle: "cratcher-colonel-shahaduz-zaman",
+      description: "শাহাদুজ্জামানের বহুল আলোচিত রাজনৈতিক গবেষণাধর্মী জীবনী উপন্যাস। বাংলাদেশের অভ্যুদয় পর্বের রক্তাক্ত ইতিহাস।",
+      thumbnail: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_prothoma",
+      author: "শাহাদুজ্জামান (Shahaduz Zaman)",
+      isbn: "978-9844658912",
+      categories: ["History", "Politics", "Biographies"],
+      hardcover_price: 42000,  // ৳420.00
       ebook_price: 20000,      // ৳200.00
     },
     {
