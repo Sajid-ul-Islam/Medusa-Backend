@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/components/ui/toast";
+import { Heart, Sparkles, Feather } from "lucide-react";
 
 interface ProductCardProps {
   id: string;
@@ -17,6 +19,7 @@ interface ProductCardProps {
     handle: string;
   };
   variantId?: string;
+  isSigned?: boolean;
 }
 
 export function ProductCard({
@@ -27,9 +30,43 @@ export function ProductCard({
   price,
   publisher,
   variantId,
+  isSigned = false,
 }: ProductCardProps) {
   const { addToCart, isLoading } = useCart();
-  const { success, error: toastError } = useToast();
+  const { success, info, error: toastError } = useToast();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("bookhub_wishlist");
+    if (saved) {
+      try {
+        const list = JSON.parse(saved);
+        if (list.includes(id)) {
+          setIsWishlisted(true);
+        }
+      } catch (e) {}
+    }
+  }, [id]);
+
+  const toggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const saved = localStorage.getItem("bookhub_wishlist");
+    let list: string[] = saved ? JSON.parse(saved) : [];
+
+    if (isWishlisted) {
+      list = list.filter((item) => item !== id);
+      setIsWishlisted(false);
+      info(`Removed "${title}" from your wishlist.`, "Wishlist Updated");
+    } else {
+      list.push(id);
+      setIsWishlisted(true);
+      success(`Saved "${title}" to your personal bookshelf wishlist!`, "Added to Wishlist");
+    }
+
+    localStorage.setItem("bookhub_wishlist", JSON.stringify(list));
+  };
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -61,6 +98,31 @@ export function ProductCard({
             <span className="text-4xl text-muted-foreground">📚</span>
           </div>
         )}
+
+        {/* Wishlist Heart Button */}
+        <button
+          type="button"
+          onClick={toggleWishlist}
+          className="absolute top-2.5 right-2.5 p-2 rounded-full bg-background/80 backdrop-blur-sm border shadow-xs hover:bg-background transition text-foreground"
+          aria-label="Add to Wishlist"
+        >
+          <Heart
+            className={`h-4 w-4 transition-colors ${
+              isWishlisted ? "fill-red-500 text-red-500" : "text-muted-foreground hover:text-red-500"
+            }`}
+          />
+        </button>
+
+        {/* Promo / Signed Badge */}
+        {isSigned ? (
+          <div className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500 text-amber-950 font-black text-[10px] uppercase shadow-md tracking-wider">
+            <Feather className="h-3 w-3" /> Signed Copy
+          </div>
+        ) : (
+          <div className="absolute top-2.5 left-2.5 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white font-bold text-[10px]">
+            <Sparkles className="h-3 w-3 text-amber-400" /> Boi Mela
+          </div>
+        )}
       </Link>
 
       {/* Book Information */}
@@ -90,7 +152,7 @@ export function ProductCard({
                 size="sm"
                 onClick={handleAddToCart}
                 disabled={isLoading}
-                className="opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                className="opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity font-bold"
               >
                 Add to Bag
               </Button>

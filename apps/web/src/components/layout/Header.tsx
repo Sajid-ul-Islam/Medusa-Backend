@@ -3,14 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingCart, BookOpen, Store, Search, UserPlus } from "lucide-react";
+import { ShoppingCart, BookOpen, Store, Search, UserPlus, Coins, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import { useRewards } from "@/context/RewardsContext";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 
 export function Header() {
   const router = useRouter();
-  const { cart, isInitialized } = useCart();
+  const { cart, isInitialized, openDrawer } = useCart();
+  const { coins, streakDays, claimDailyStreakBonus, hasClaimedToday } = useRewards();
   const [searchQuery, setSearchQuery] = useState("");
 
   const itemCount =
@@ -64,6 +66,13 @@ export function Header() {
             Publishers
           </Link>
           <Link
+            href="/request-book"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Request a Book
+          </Link>
+          <Link
             href="/publisher/register"
             className="text-sm font-medium text-primary hover:underline transition-colors flex items-center gap-1"
           >
@@ -72,20 +81,40 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Action Buttons, Theme Switcher & Cart */}
-        <div className="flex items-center space-x-3">
+        {/* Action Buttons, Theme Switcher, Rewards & Cart */}
+        <div className="flex items-center space-x-2.5">
+          {/* Rewards & Daily Streak Pill */}
+          <button
+            type="button"
+            onClick={claimDailyStreakBonus}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-bold hover:bg-amber-500/20 transition cursor-pointer shadow-xs"
+            title={hasClaimedToday ? `Daily Streak: ${streakDays} Days active!` : "Click to claim +25 Daily Reading Coins!"}
+          >
+            <Coins className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
+            <span>{coins}</span>
+            <span className="text-muted-foreground">|</span>
+            <span className="flex items-center text-[11px] gap-0.5 text-red-500">
+              <Flame className="h-3 w-3 fill-red-500" /> {streakDays}d
+            </span>
+          </button>
+
           <ThemeSwitcher />
 
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative" aria-label="Shopping Cart">
-              <ShoppingCart className="h-5 w-5" />
-              {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-bold animate-in zoom-in-50">
-                  {itemCount}
-                </span>
-              )}
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={openDrawer}
+            className="relative"
+            aria-label="Shopping Cart"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-bold animate-in zoom-in-50">
+                {itemCount}
+              </span>
+            )}
+          </Button>
+
           <Button asChild size="sm">
             <Link href="/publisher/dashboard">
               <Store className="mr-1.5 h-4 w-4" />

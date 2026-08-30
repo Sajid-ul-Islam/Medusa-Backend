@@ -21,12 +21,32 @@ import {
   Trash2,
   Monitor,
   Smartphone,
+  Palette,
+  Globe,
+  Sparkles,
+  Share2,
+  Crown,
+  Zap,
+  ShieldCheck as ShieldIcon,
 } from "lucide-react";
 
 export default function PublisherDashboard() {
   const { success, info, error: toastError } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const [isDesktopMode, setIsDesktopMode] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<"starter" | "pro" | "enterprise">("pro");
+
+  const [storefrontProfile, setStorefrontProfile] = useState({
+    name: "Batighar Publications (বাতিঘর)",
+    tagline: "Premier Bengali Literature & World Translations",
+    bio: "Batighar is an iconic Bangladeshi publishing house celebrating rich Bengali novels, world translations, poetry collections, and Amar Ekushey Boi Mela special releases.",
+    location: "Banglabazar, Dhaka & Anderkilla, Chattogram",
+    logoUrl: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=300&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80",
+    facebook: "facebook.com/batigharbd",
+    website: "https://batighar.com",
+    phone: "+880 1712-345678",
+  });
 
   const [booksList, setBooksList] = useState<any[]>([
     {
@@ -346,6 +366,8 @@ export default function PublisherDashboard() {
             {[
               { id: "overview", label: "Overview", icon: BarChart3 },
               { id: "books", label: "My Book Titles", icon: BookOpen },
+              { id: "storefront-customizer", label: "Storefront & Branding", icon: Palette },
+              { id: "subscription", label: "SaaS Plans & Billing", icon: Crown },
               { id: "bulk-import", label: "Bulk Import (Excel/CSV)", icon: FileSpreadsheet },
               { id: "upload", label: "Upload Single Book", icon: Upload },
               { id: "orders", label: "Customer Orders", icon: Package },
@@ -370,16 +392,106 @@ export default function PublisherDashboard() {
         {/* Content View */}
         <div className="lg:col-span-9">
           <div className="bg-card rounded-2xl border p-6 sm:p-8 shadow-sm">
-            {/* Overview Tab */}
+            {/* Overview Tab with Visual Analytics */}
             {activeTab === "overview" && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-bold mb-1">Bookstore Performance</h2>
+                  <h2 className="text-xl font-bold mb-1">Bookstore Performance &amp; Analytics</h2>
                   <p className="text-xs text-muted-foreground">
-                    Summary of catalog activity and sales performance.
+                    Live telemetry tracking your bookstore sales, format preferences, and revenue splits.
                   </p>
                 </div>
 
+                {/* 7-Day Revenue Bar Chart */}
+                <div className="p-6 bg-card rounded-2xl border shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-bold text-sm">7-Day Sales Trend (BDT ৳)</h3>
+                      <p className="text-xs text-muted-foreground">Daily earnings from physical &amp; digital orders</p>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                      +18.4% this week
+                    </span>
+                  </div>
+
+                  {/* Visual Bar Chart */}
+                  <div className="h-44 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b">
+                    {[
+                      { day: "Mon", height: "45%", amount: "৳14,200" },
+                      { day: "Tue", height: "60%", amount: "৳19,500" },
+                      { day: "Wed", height: "35%", amount: "৳11,800" },
+                      { day: "Thu", height: "80%", amount: "৳26,400" },
+                      { day: "Fri", height: "95%", amount: "৳31,200" },
+                      { day: "Sat", height: "100%", amount: "৳34,500" },
+                      { day: "Sun", height: "70%", amount: "৳22,800" },
+                    ].map((bar) => (
+                      <div key={bar.day} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+                        <div className="opacity-0 group-hover:opacity-100 transition text-[10px] font-mono font-bold text-primary bg-muted px-1.5 py-0.5 rounded shadow-xs">
+                          {bar.amount}
+                        </div>
+                        <div
+                          className="w-full max-w-[36px] bg-primary/80 hover:bg-primary rounded-t-lg transition-all duration-300"
+                          style={{ height: bar.height }}
+                        />
+                        <span className="text-[11px] text-muted-foreground font-semibold">{bar.day}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Breakdown Grid: Format Preferences & Bestsellers */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Format Split */}
+                  <div className="p-5 bg-card rounded-2xl border space-y-3">
+                    <h3 className="font-bold text-sm flex items-center justify-between">
+                      <span>Sales by Format</span>
+                      <span className="text-xs text-muted-foreground font-normal">Physical vs Digital</span>
+                    </h3>
+
+                    <div className="space-y-3 pt-2">
+                      <div>
+                        <div className="flex justify-between text-xs font-semibold mb-1">
+                          <span className="flex items-center gap-1.5">📦 Physical Paperbacks</span>
+                          <span className="font-bold">64% (৳98,300)</span>
+                        </div>
+                        <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div className="h-full bg-primary rounded-full" style={{ width: "64%" }} />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-xs font-semibold mb-1">
+                          <span className="flex items-center gap-1.5">⚡ Instant Digital eBooks</span>
+                          <span className="font-bold">36% (৳55,300)</span>
+                        </div>
+                        <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div className="h-full bg-amber-500 rounded-full" style={{ width: "36%" }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Store Telemetry & Courier Velocity */}
+                  <div className="p-5 bg-card rounded-2xl border space-y-3">
+                    <h3 className="font-bold text-sm flex items-center justify-between">
+                      <span>Logistics &amp; Fulfillment</span>
+                      <span className="text-xs text-emerald-600 font-bold">Pathao Express</span>
+                    </h3>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                      <div className="p-3 bg-muted/40 rounded-xl">
+                        <div className="text-muted-foreground text-[10px]">Avg Dispatch Time</div>
+                        <div className="text-base font-black mt-0.5">3.2 Hours</div>
+                      </div>
+                      <div className="p-3 bg-muted/40 rounded-xl">
+                        <div className="text-muted-foreground text-[10px]">On-Time Delivery</div>
+                        <div className="text-base font-black text-emerald-600 mt-0.5">99.2%</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Store Profile & Revenue Split Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-5 bg-muted/40 rounded-xl border space-y-3">
                     <h3 className="font-bold text-sm flex items-center gap-2">
@@ -802,6 +914,448 @@ export default function PublisherDashboard() {
                         Set Primary
                       </Button>
                     </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Storefront & Branding Customizer Tab */}
+            {activeTab === "storefront-customizer" && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-primary" /> Storefront Branding &amp; Customization
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Customize how your bookstore looks to thousands of readers on the BookHub marketplace.
+                  </p>
+                </div>
+
+                {/* Live Storefront Preview Card */}
+                <div className="p-5 bg-card border rounded-2xl shadow-xs space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                      <Sparkles className="h-3.5 w-3.5 text-primary" /> Live Customer Storefront Preview
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-mono">
+                      https://bookhub.com.bd/publishers/{storefrontProfile.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}
+                    </span>
+                  </div>
+
+                  {/* Visual Preview Canvas */}
+                  <div className="border rounded-2xl overflow-hidden shadow-sm">
+                    <div
+                      className="h-28 sm:h-36 bg-cover bg-center relative"
+                      style={{ backgroundImage: `url(${storefrontProfile.bannerUrl})` }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                      <div className="absolute bottom-3 left-4 right-4 flex items-end gap-3">
+                        <img
+                          src={storefrontProfile.logoUrl}
+                          alt="Store Logo"
+                          className="h-14 w-14 rounded-xl border-2 border-white object-cover bg-white shadow-md"
+                        />
+                        <div className="text-white min-w-0">
+                          <h3 className="font-extrabold text-base truncate flex items-center gap-1.5">
+                            {storefrontProfile.name}
+                            <CheckCircle2 className="h-4 w-4 text-emerald-400 fill-emerald-400 text-white flex-shrink-0" />
+                          </h3>
+                          <p className="text-xs text-white/80 truncate">{storefrontProfile.tagline}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-card text-xs space-y-2">
+                      <p className="text-muted-foreground leading-relaxed">{storefrontProfile.bio}</p>
+                      <div className="flex flex-wrap items-center gap-4 text-muted-foreground pt-1 border-t">
+                        <span>📍 {storefrontProfile.location}</span>
+                        <span>🌐 {storefrontProfile.website}</span>
+                        <span>📘 {storefrontProfile.facebook}</span>
+                        <span>📞 {storefrontProfile.phone}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Form Fields */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    success("Storefront branding updated and published!", "Profile Saved");
+                  }}
+                  className="space-y-4 pt-2 border-t"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Bookstore Brand Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={storefrontProfile.name}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, name: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Store Tagline / Slogan
+                      </label>
+                      <input
+                        type="text"
+                        value={storefrontProfile.tagline}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, tagline: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Store Bio &amp; About Us Story *
+                      </label>
+                      <textarea
+                        rows={3}
+                        required
+                        value={storefrontProfile.bio}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, bio: e.target.value })
+                        }
+                        className="w-full p-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Logo Image URL
+                      </label>
+                      <input
+                        type="url"
+                        value={storefrontProfile.logoUrl}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, logoUrl: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Storefront Banner Image URL
+                      </label>
+                      <input
+                        type="url"
+                        value={storefrontProfile.bannerUrl}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, bannerUrl: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Physical Store / Office Location in Bangladesh
+                      </label>
+                      <input
+                        type="text"
+                        value={storefrontProfile.location}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, location: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-muted-foreground block mb-1">
+                        Official Facebook Page
+                      </label>
+                      <input
+                        type="text"
+                        value={storefrontProfile.facebook}
+                        onChange={(e) =>
+                          setStorefrontProfile({ ...storefrontProfile, facebook: e.target.value })
+                        }
+                        className="w-full h-10 px-3 rounded-lg border bg-background text-sm focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-3">
+                    <Button type="submit" className="gap-1.5 shadow-sm font-bold">
+                      <Sparkles className="h-4 w-4" /> Save Storefront Branding
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* SaaS Subscription & Plans Tab */}
+            {activeTab === "subscription" && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-amber-500" /> SaaS Publisher Plans &amp; Billing
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Choose the plan that fits your publishing volume. Lower platform cuts and unlock dedicated custom subdomains.
+                  </p>
+                </div>
+
+                {/* Plan Comparison Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  {/* Starter Tier */}
+                  <div
+                    className={`p-5 rounded-2xl border flex flex-col justify-between transition-all ${
+                      currentPlan === "starter"
+                        ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-md"
+                        : "bg-card hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
+                          Starter
+                        </span>
+                        {currentPlan === "starter" && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-primary text-primary-foreground">
+                            Active Plan
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-2xl font-black">৳0</span>
+                        <span className="text-xs text-muted-foreground"> / month</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        For independent authors and small presses starting out.
+                      </p>
+
+                      <ul className="mt-4 space-y-2 text-xs text-muted-foreground border-t pt-4">
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>15% Marketplace Commission</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Up to 25 Book Titles</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Standard Marketplace Listing</span>
+                        </li>
+                        <li className="flex items-center gap-2 text-muted-foreground/60">
+                          <span>✕ Custom Subdomain</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-6">
+                      <Button
+                        variant={currentPlan === "starter" ? "outline" : "secondary"}
+                        disabled={currentPlan === "starter"}
+                        onClick={() => {
+                          setCurrentPlan("starter");
+                          success("Switched to Starter Plan (15% Commission)", "Plan Updated");
+                        }}
+                        className="w-full text-xs font-bold"
+                      >
+                        {currentPlan === "starter" ? "Current Tier" : "Downgrade to Starter"}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Pro Publisher Tier (Most Popular) */}
+                  <div
+                    className={`p-5 rounded-2xl border flex flex-col justify-between transition-all relative ${
+                      currentPlan === "pro"
+                        ? "border-primary bg-primary/5 ring-2 ring-primary/30 shadow-xl"
+                        : "bg-card hover:border-primary/40 shadow-sm"
+                    }`}
+                  >
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground font-black text-[10px] uppercase px-3 py-0.5 rounded-full shadow-sm">
+                      ⚡ Most Popular
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-black uppercase tracking-wider text-primary">
+                          Pro Publisher
+                        </span>
+                        {currentPlan === "pro" && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-600 text-white">
+                            Active Plan
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-2xl font-black">৳1,499</span>
+                        <span className="text-xs text-muted-foreground"> / month</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        For professional publishing houses scaling sales.
+                      </p>
+
+                      <ul className="mt-4 space-y-2 text-xs text-foreground border-t pt-4">
+                        <li className="flex items-center gap-2 font-bold text-primary">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                          <span>8% Reduced Platform Cut</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Unlimited Book Catalog Titles</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Branded Subdomain (pub.bookhub.bd)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>48-Hour Direct bKash Payouts</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Priority Pathao Doorstep Pickup</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-6">
+                      <Button
+                        variant={currentPlan === "pro" ? "outline" : "default"}
+                        disabled={currentPlan === "pro"}
+                        onClick={() => {
+                          setCurrentPlan("pro");
+                          success("Upgraded to Pro Publisher Plan (8% Commission)", "Plan Upgraded");
+                        }}
+                        className="w-full text-xs font-bold shadow-sm"
+                      >
+                        {currentPlan === "pro" ? "Current Tier" : "Upgrade to Pro"}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Enterprise Flagship Tier */}
+                  <div
+                    className={`p-5 rounded-2xl border flex flex-col justify-between transition-all ${
+                      currentPlan === "enterprise"
+                        ? "border-primary bg-primary/5 ring-2 ring-primary/20 shadow-md"
+                        : "bg-card hover:border-muted-foreground/30"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <span className="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                          Enterprise Flagship
+                        </span>
+                        {currentPlan === "enterprise" && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-amber-950">
+                            Active Plan
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-3">
+                        <span className="text-2xl font-black">৳4,999</span>
+                        <span className="text-xs text-muted-foreground"> / month</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        For top-tier national publishers &amp; Boi Mela institutions.
+                      </p>
+
+                      <ul className="mt-4 space-y-2 text-xs text-muted-foreground border-t pt-4">
+                        <li className="flex items-center gap-2 font-bold text-amber-600 dark:text-amber-400">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-amber-500 flex-shrink-0" />
+                          <span>4% Lowest Platform Cut</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Own Custom Domain (books.pub.com)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Instant Real-Time Bank Settlement</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Dedicated DRM Dynamic Watermarking</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 flex-shrink-0" />
+                          <span>Bulk Barcode Waybill Manifest Printer</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="mt-6">
+                      <Button
+                        variant={currentPlan === "enterprise" ? "outline" : "default"}
+                        disabled={currentPlan === "enterprise"}
+                        onClick={() => {
+                          setCurrentPlan("enterprise");
+                          success("Upgraded to Enterprise Flagship (4% Commission)", "Plan Upgraded");
+                        }}
+                        className="w-full text-xs font-bold"
+                      >
+                        {currentPlan === "enterprise" ? "Current Tier" : "Upgrade to Enterprise"}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Billing Receipts & Invoice History */}
+                <div className="p-5 bg-card border rounded-2xl shadow-xs space-y-3 pt-4">
+                  <h3 className="font-bold text-sm">Monthly Subscription Billing History</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs text-left">
+                      <thead className="bg-muted/40 text-muted-foreground uppercase text-[10px] font-bold">
+                        <tr>
+                          <th className="p-2.5 rounded-l-lg">Invoice ID</th>
+                          <th className="p-2.5">Date</th>
+                          <th className="p-2.5">Plan</th>
+                          <th className="p-2.5">Amount</th>
+                          <th className="p-2.5">Payment Method</th>
+                          <th className="p-2.5 rounded-r-lg text-right">Receipt</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/50 font-mono">
+                        <tr>
+                          <td className="p-2.5 font-bold">INV-2026-0801</td>
+                          <td className="p-2.5">Aug 1, 2026</td>
+                          <td className="p-2.5 font-sans font-semibold text-primary">Pro Publisher</td>
+                          <td className="p-2.5 font-bold">৳1,499.00</td>
+                          <td className="p-2.5 font-sans">bKash Auto-Debit (•••• 9988)</td>
+                          <td className="p-2.5 text-right">
+                            <button
+                              onClick={() => info("Invoice PDF downloaded")}
+                              className="text-primary hover:underline font-bold"
+                            >
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="p-2.5 font-bold">INV-2026-0701</td>
+                          <td className="p-2.5">Jul 1, 2026</td>
+                          <td className="p-2.5 font-sans font-semibold text-primary">Pro Publisher</td>
+                          <td className="p-2.5 font-bold">৳1,499.00</td>
+                          <td className="p-2.5 font-sans">bKash Auto-Debit (•••• 9988)</td>
+                          <td className="p-2.5 text-right">
+                            <button
+                              onClick={() => info("Invoice PDF downloaded")}
+                              className="text-primary hover:underline font-bold"
+                            >
+                              Download
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>

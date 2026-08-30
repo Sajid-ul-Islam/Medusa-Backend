@@ -3,21 +3,14 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { api, getCartId, setCartId, removeCartId } from "@/lib/medusa";
 
-interface CartItem {
-  id: string;
-  title: string;
-  quantity: number;
-  variant_id: string;
-  product_id: string;
-  thumbnail?: string;
-  unit_price: number;
-  total: number;
-}
-
 interface CartContextType {
   cart: any | null;
   isLoading: boolean;
   isInitialized: boolean;
+  isDrawerOpen: boolean;
+  openDrawer: () => void;
+  closeDrawer: () => void;
+  toggleDrawer: () => void;
   addToCart: (variantId: string, quantity?: number) => Promise<void>;
   removeFromCart: (lineItemId: string) => Promise<void>;
   updateQuantity: (lineItemId: string, quantity: number) => Promise<void>;
@@ -31,6 +24,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const openDrawer = () => setIsDrawerOpen(true);
+  const closeDrawer = () => setIsDrawerOpen(false);
+  const toggleDrawer = () => setIsDrawerOpen((prev) => !prev);
 
   // Initialize or load cart on mount (client-side only)
   useEffect(() => {
@@ -97,6 +95,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         await api.addToCart(cartId, variantId, quantity);
         await refreshCart();
       }
+      // Open the slide-over drawer automatically for a seamless UX
+      setIsDrawerOpen(true);
     } catch (error) {
       console.error("Failed to add to cart:", error);
       throw error;
@@ -147,7 +147,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     createNewCart();
   };
 
-  // Don't render children until cart is initialized
   if (!isInitialized) {
     return <>{children}</>;
   }
@@ -158,6 +157,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         cart,
         isLoading,
         isInitialized,
+        isDrawerOpen,
+        openDrawer,
+        closeDrawer,
+        toggleDrawer,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -173,11 +176,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 export function useCart() {
   const context = useContext(CartContext);
   if (context === undefined) {
-    // Return default values during SSR instead of throwing
     return {
       cart: null,
       isLoading: false,
       isInitialized: true,
+      isDrawerOpen: false,
+      openDrawer: () => {},
+      closeDrawer: () => {},
+      toggleDrawer: () => {},
       addToCart: async () => {},
       removeFromCart: async () => {},
       updateQuantity: async () => {},

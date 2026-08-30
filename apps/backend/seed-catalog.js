@@ -14,8 +14,60 @@ async function enrichDatabase() {
   await client.connect();
   console.log("Connected to Supabase PostgreSQL for Catalog Enrichment...");
 
-  // 1. Enrich Publishers
+  // 1. Enrich Publishers (General, Academic, Bengali Literature, and Islamic)
   const publishers = [
+    {
+      id: "pub_guardian",
+      name: "Guardian Publications (গার্ডিয়ান পাবলিকেশন)",
+      email: "contact@guardianpubs.com",
+      handle: "guardian-publications",
+      store_name: "Guardian Publications",
+      description: "Leading publisher of contemporary Islamic research, Seerah literature, spiritual purification, and youth development books.",
+      location: "Banglabazar, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_somokalin",
+      name: "Somokalin Prokashon (সমকালীন প্রকাশন)",
+      email: "info@somokalin.com",
+      handle: "somokalin-prokashon",
+      store_name: "Somokalin Prokashon",
+      description: "Celebrated publisher of Arif Azad's bestsellers (Paradoxical Sajid), youth motivation, and modern lifestyle literature.",
+      location: "Banglabazar, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1507842229451-2b0e6c51804b?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_islamic_foundation",
+      name: "Islamic Foundation Bangladesh (ইসলামিক ফাউন্ডেশন)",
+      email: "info@islamicfoundation.gov.bd",
+      handle: "islamic-foundation",
+      store_name: "Islamic Foundation Bangladesh",
+      description: "Official statutory authority publishing authentic Quranic exegesis (Tafsir), Sahih Hadith encyclopedias, and Islamic jurisprudence.",
+      location: "Agargaon, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_shian",
+      name: "Shian Publications (শিয়ান পাবলিকেশন)",
+      email: "sales@shian.com",
+      handle: "shian-publications",
+      store_name: "Shian Publications",
+      description: "Prestigious publisher of Islamic history, spirituality, classical Arabic translations, and Tazkiyah literature.",
+      location: "Purana Paltan, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
     {
       id: "pub_oreilly",
       name: "O'Reilly Media & Tech",
@@ -94,6 +146,71 @@ async function enrichDatabase() {
       is_verified: true,
       status: "active",
     },
+    {
+      id: "pub_somoy",
+      name: "Somoy Prokashon (সময় প্রকাশন)",
+      email: "info@somoyprokashon.com",
+      handle: "somoy-prokashon",
+      store_name: "Somoy Prokashon",
+      description: "Pioneering publisher of iconic science fiction, popular thrillers, and Ekushey Boi Mela bestsellers.",
+      location: "Banglabazar, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_anyaprokash",
+      name: "Anyaprokash (অন্যপ্রকাশ)",
+      email: "contact@anyaprokash.com",
+      handle: "anyaprokash",
+      store_name: "Anyaprokash",
+      description: "Historic prestigious home of Humayun Ahmed masterpieces, contemporary novels, and Bengali cultural literature.",
+      location: "Purana Paltan, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1524578271613-d550eacf6090?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1507842229451-2b0e6c51804b?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_tamralipi",
+      name: "Tamralipi (তাম্রলিপি)",
+      email: "sales@tamralipi.com",
+      handle: "tamralipi",
+      store_name: "Tamralipi",
+      description: "Leading publisher of children's literature, young adult fiction, translations, and science encyclopedias.",
+      location: "Purana Paltan, Dhaka, Bangladesh",
+      logo_url: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_mit_press",
+      name: "MIT Press & Computing",
+      email: "info@mitpress.mit.edu",
+      handle: "mit-press",
+      store_name: "MIT Press & Computing",
+      description: "World authority in Algorithms, Deep Learning, Cryptography, Computational Theory, and Open Science.",
+      location: "Cambridge, Massachusetts, USA",
+      logo_url: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
+    {
+      id: "pub_harpercollins",
+      name: "HarperCollins Classics",
+      email: "contact@harpercollins.com",
+      handle: "harpercollins-classics",
+      store_name: "HarperCollins Classics",
+      description: "One of the world's greatest publishing houses bringing inspiring fiction, biographies, and timeless wisdom.",
+      location: "New York, USA",
+      logo_url: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=300&q=80",
+      banner_url: "https://images.unsplash.com/photo-1507842229451-2b0e6c51804b?auto=format&fit=crop&w=1200&q=80",
+      is_verified: true,
+      status: "active",
+    },
   ];
 
   // Hash password for publishers (publisher123)
@@ -132,10 +249,125 @@ async function enrichDatabase() {
       ]
     );
   }
-  console.log("✔ 6 Verified Publishers Seeded!");
+  console.log(`✔ ${publishers.length} Verified Publishing Houses Seeded!`);
 
   // 2. Enrich Book Catalog (Medusa Products + Variants + BDT Prices)
   const books = [
+    // --- Islamic Publications ---
+    {
+      id: "prod_paradoxical_sajid",
+      title: "প্যারাডক্সিক্যাল সাজিদ (Paradoxical Sajid 1 & 2)",
+      subtitle: "বিশ্বাসের পক্ষে যুক্তি ও আধুনিক মনস্তত্ত্বের কথোপকথন",
+      handle: "paradoxical-sajid-arif-azad",
+      description: "আরিফ আজাদের সর্বাধিক বিক্রিত অনুপ্রেরণাদায়ী বই। বিশ্বাস, বিজ্ঞান, দর্শন ও সংশয়বাদের বিরুদ্ধে যৌক্তিক ও সাবলীল সংলাপ।",
+      thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_somokalin",
+      author: "আরিফ আজাদ (Arif Azad)",
+      isbn: "978-9849312211",
+      categories: ["Islamic Literature", "Faith & Philosophy", "Youth Inspiration"],
+      hardcover_price: 38000, // ৳380.00
+      ebook_price: 18000,     // ৳180.00
+    },
+    {
+      id: "prod_bela_phurabar_age",
+      title: "বেলা ফুরাবার আগে (Bela Phurabar Age)",
+      subtitle: "জীবনের মোড় ঘুরিয়ে দেওয়ার মতো আত্মশুদ্ধির ডাক",
+      handle: "bela-phurabar-age-arif-azad",
+      description: "আরিফ আজাদের হৃদয়স্পর্শী আধ্যাত্মিক জাগরণের বই। সময়ের মূল্য, তাকওয়া ও জীবনের আসল উদ্দেশ্যের সন্ধান।",
+      thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_somokalin",
+      author: "আরিফ আজাদ (Arif Azad)",
+      isbn: "978-9849312255",
+      categories: ["Islamic Literature", "Spirituality", "Self-Development"],
+      hardcover_price: 32000, // ৳320.00
+      ebook_price: 15000,     // ৳150.00
+    },
+    {
+      id: "prod_raheeq_makhtum",
+      title: "আর-রাহীকুল মাখতূম (Ar-Raheeq Al-Makhtum)",
+      subtitle: "বিশ্ব মুসলিম রাবেতায়ে আলম কর্তৃক প্রথম পুরস্কারপ্রাপ্ত সীরাত গ্রন্থ",
+      handle: "ar-raheeq-al-makhtum-sirat-nabi",
+      description: "রাসূলুল্লাহ ﷺ-এর প্রামাণ্য ও পূর্ণাঙ্গ জীবনচরিত। বিশ্বব্যাপী আন্তর্জাতিক সীরাত প্রতিযোগিতায় প্রথম স্থান অধিকারী অনন্য গ্রন্থ।",
+      thumbnail: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_guardian",
+      author: "আল্লামা সফিউর রহমান মোবারকপুরী (Safiur Rahman Mubarakpuri)",
+      isbn: "978-9848761109",
+      categories: ["Sirat un-Nabi", "Islamic History", "Biographies"],
+      hardcover_price: 65000, // ৳650.00
+      ebook_price: 28000,     // ৳280.00
+    },
+    {
+      id: "prod_tafsir_maariful_quran",
+      title: "তাফসীরে মা'আরিফুল কুরআন (Tafsir Maariful Quran)",
+      subtitle: "পূর্ণাঙ্গ ৮ খণ্ড সংস্করণ - কুরআনুল কারীমের নির্ভরযোগ্য ব্যাখ্যা",
+      handle: "tafsir-maariful-quran-complete-shafi",
+      description: "মুফতী মুহাম্মদ শফী রহ.-এর কালজয়ী তাফসীর গ্রন্থ। সাধারণ ও গবেষক উভয়ের জন্য কুরআনের অর্থ, শানে নুযুল ও জীবনঘনিষ্ঠ ব্যাখ্যা।",
+      thumbnail: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_islamic_foundation",
+      author: "মুফতী মুহাম্মদ শফী রহ. (Mufti Muhammad Shafi)",
+      isbn: "978-9840602214",
+      categories: ["Quran Exegesis", "Tafsir", "Islamic Academic"],
+      hardcover_price: 360000, // ৳3,600.00
+      ebook_price: 120000,     // ৳1,200.00
+    },
+    {
+      id: "prod_sahih_bukhari",
+      title: "সহীহ বুখারী শরীফ পূর্ণাঙ্গ সংকলন (Sahih Al-Bukhari)",
+      subtitle: "বিশুদ্ধ হাদীসের সর্বশ্রেষ্ঠ গ্রন্থ - ইসলামিক ফাউন্ডেশন সংস্করণ",
+      handle: "sahih-al-bukhari-islamic-foundation",
+      description: "কুরআনের পর সর্বাধিক বিশুদ্ধ গ্রন্থ। ইমাম বুখারী রহ. কর্তৃক সংকলিত রাসূলুল্লাহ ﷺ-এর নির্ভরযোগ্য হাদীস ও শরীয়তের বিধান।",
+      thumbnail: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_islamic_foundation",
+      author: "ইমাম মুহাম্মদ ইবনে ইসমাইল বুখারী রহ. (Imam Bukhari)",
+      isbn: "978-9840611002",
+      categories: ["Hadith Collections", "Islamic Law", "Scriptures"],
+      hardcover_price: 450000, // ৳4,500.00
+      ebook_price: 150000,     // ৳1,500.00
+    },
+    {
+      id: "prod_return_allah",
+      title: "রিটার্ন: জীবনের নতুন বাঁকে (Return: To the Creator)",
+      subtitle: "তরুণ প্রজন্মের আত্মপরিচয় ও আত্মজিজ্ঞাসার উত্তর",
+      handle: "return-jiboner-notun-baanke-asif-adnan",
+      description: "আধুনিক জীবনের দ্বিধা-দ্বন্দ্ব ও বিভ্রান্তির মাঝে ঈমানী স্থিরতা এবং আল্লাহর পথে ফিরে আসার অনন্য গাইড।",
+      thumbnail: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_guardian",
+      author: "আসিফ আদনান (Asif Adnan)",
+      isbn: "978-9848761445",
+      categories: ["Islamic Literature", "Youth Guidance", "Ethics"],
+      hardcover_price: 35000, // ৳350.00
+      ebook_price: 16000,     // ৳160.00
+    },
+    {
+      id: "prod_ihya_ulum",
+      title: "এহইয়াউ উলুমিদ্দীন (Ihya Ulum al-Din: The Revival)",
+      subtitle: "দ্বীনী জ্ঞানের পুনরুজ্জীবন ও আত্মশুদ্ধির মহাকাব্য",
+      handle: "ihya-ulum-al-din-imam-al-ghazali",
+      description: "হুজ্জাতুল ইসলাম ইমাম গাজ্জালী রহ.-এর অমর সৃষ্টি। অন্তরের রোগমুক্তি, ইখলাস ও স্রষ্টার নৈকট্য অর্জনের পথনির্দেশ।",
+      thumbnail: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_shian",
+      author: "ইমাম আবু হামিদ আল-গাজ্জালী রহ. (Imam Al-Ghazali)",
+      isbn: "978-9849201123",
+      categories: ["Tazkiyah", "Spirituality", "Islamic Classics"],
+      hardcover_price: 85000, // ৳850.00
+      ebook_price: 38000,     // ৳380.00
+    },
+    {
+      id: "prod_hidayah_fiqh",
+      title: "আল-হেদায়াহ: ইসলামী আইন ও ফিকহের মূল গ্রন্থ (Al-Hidayah)",
+      subtitle: "হানাফী মাযহাবের প্রামাণ্য ও ঐতিহাসিক ফিকহ বিশ্বকোষ",
+      handle: "al-hidayah-hanafi-fiqh-classic",
+      description: "ইসলামী আইন ও ব্যবহারিক ফিকহের সর্বাধিক সমাদৃত টেক্সটবুক। ইবাদত, মুয়ামালাত ও সমাজনীতির বিস্তারিত সমাধান।",
+      thumbnail: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_islamic_foundation",
+      author: "বুরহানুদ্দীন আল-মারগিনানী রহ. (Burhan al-Din al-Marghinani)",
+      isbn: "978-9840608899",
+      categories: ["Islamic Law", "Fiqh", "Academic"],
+      hardcover_price: 140000, // ৳1,400.00
+      ebook_price: 60000,      // ৳600.00
+    },
+
+    // --- Tech & Academic Catalog ---
     {
       id: "prod_ddia",
       title: "Designing Data-Intensive Applications",
@@ -165,32 +397,60 @@ async function enrichDatabase() {
       ebook_price: 50000,      // ৳500.00
     },
     {
-      id: "prod_ai_modern",
-      title: "Artificial Intelligence: A Modern Approach (4th Ed)",
-      subtitle: "The Authoritative introduction to AI theory and neural systems",
-      handle: "artificial-intelligence-a-modern-approach",
-      description: "The authoritative, most widely used introduction to AI theory and practice in university programs worldwide.",
+      id: "prod_grokking_algo",
+      title: "Grokking Algorithms: An Illustrated Guide",
+      subtitle: "For Programmers and Other Curious People",
+      handle: "grokking-algorithms-illustrated-guide",
+      description: "A friendly, fully illustrated guide that teaches you how to apply common algorithms to practical programming problems.",
+      thumbnail: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_oreilly",
+      author: "Aditya Y. Bhargava",
+      isbn: "978-1617292231",
+      categories: ["Technology", "Algorithms", "Computer Science"],
+      hardcover_price: 85000,  // ৳850.00
+      ebook_price: 45000,      // ৳450.00
+    },
+    {
+      id: "prod_clrs_algo",
+      title: "Introduction to Algorithms (CLRS 4th Edition)",
+      subtitle: "The Comprehensive Standard Algorithms Textbook",
+      handle: "introduction-to-algorithms-clrs-4th-edition",
+      description: "The leading algorithms text in universities worldwide, covering graph theory, dynamic programming, and greedy heuristics.",
       thumbnail: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?auto=format&fit=crop&w=600&q=80",
-      publisher_id: "pub_oxford",
-      author: "Stuart Russell & Peter Norvig",
-      isbn: "978-0134610993",
-      categories: ["Academic", "Artificial Intelligence", "Computer Science"],
-      hardcover_price: 185000, // ৳1,850.00
+      publisher_id: "pub_mit_press",
+      author: "Cormen, Leiserson, Rivest & Stein",
+      isbn: "978-0262046305",
+      categories: ["Academic", "Algorithms", "Computer Science"],
+      hardcover_price: 220000, // ৳2,200.00
+      ebook_price: 95000,      // ৳950.00
+    },
+    {
+      id: "prod_deep_learning_mit",
+      title: "Deep Learning (Adaptive Computation and Machine Learning)",
+      subtitle: "The definitive mathematical and algorithmic reference on neural networks",
+      handle: "deep-learning-mit-press-goodfellow",
+      description: "The seminal textbook on deep learning by Yoshua Bengio, Ian Goodfellow, and Aaron Courville.",
+      thumbnail: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_mit_press",
+      author: "Ian Goodfellow & Yoshua Bengio",
+      isbn: "978-0262035613",
+      categories: ["Academic", "Artificial Intelligence", "Deep Learning"],
+      hardcover_price: 195000, // ৳1,950.00
       ebook_price: 85000,      // ৳850.00
     },
     {
-      id: "prod_quantum",
-      title: "Principles of Quantum Mechanics",
-      subtitle: "Mathematical Foundations & Dirac Notation",
-      handle: "principles-of-quantum-mechanics",
-      description: "Comprehensive textbook on the mathematical foundations and physical principles of quantum theory.",
-      thumbnail: "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80",
-      publisher_id: "pub_oxford",
-      author: "R. Shankar",
-      isbn: "978-0306447908",
-      categories: ["Academic", "Physics", "Science"],
-      hardcover_price: 140000, // ৳1,400.00
-      ebook_price: 70000,      // ৳700.00
+      id: "prod_atomic_habits",
+      title: "Atomic Habits: Tiny Changes, Remarkable Results",
+      subtitle: "An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+      handle: "atomic-habits-james-clear",
+      description: "Over 15 million copies sold. The definitive framework for improving 1% every day by James Clear.",
+      thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_penguin",
+      author: "James Clear",
+      isbn: "978-0735211292",
+      categories: ["Self-Improvement", "Productivity", "Non-Fiction"],
+      hardcover_price: 75000,  // ৳750.00
+      ebook_price: 38000,      // ৳380.00
     },
     {
       id: "prod_sapiens",
@@ -207,18 +467,18 @@ async function enrichDatabase() {
       ebook_price: 45000,      // ৳450.00
     },
     {
-      id: "prod_great_gatsby",
-      title: "The Great Gatsby (Collector's Hardcover)",
-      subtitle: "The Timeless Jazz Age Masterpiece",
-      handle: "the-great-gatsby-collectors-edition",
-      description: "The iconic Jazz Age masterpiece capturing romance, ambition, and tragedy in 1920s Long Island.",
+      id: "prod_alchemist",
+      title: "The Alchemist (Collector's Illustrated Edition)",
+      subtitle: "A Fable About Following Your Dream",
+      handle: "the-alchemist-paulo-coelho",
+      description: "Paulo Coelho's masterpiece tells the mystical story of Santiago, an Andalusian shepherd boy who yearns to travel in search of worldly treasure.",
       thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=600&q=80",
-      publisher_id: "pub_penguin",
-      author: "F. Scott Fitzgerald",
-      isbn: "978-0743273565",
-      categories: ["Fiction", "Classics", "Literature"],
-      hardcover_price: 55000,  // ৳550.00
-      ebook_price: 25000,      // ৳250.00
+      publisher_id: "pub_harpercollins",
+      author: "Paulo Coelho",
+      isbn: "978-0062315007",
+      categories: ["Fiction", "Philosophy", "Classics"],
+      hardcover_price: 48000,  // ৳480.00
+      ebook_price: 22000,      // ৳220.00
     },
     {
       id: "prod_debipak",
@@ -235,6 +495,34 @@ async function enrichDatabase() {
       ebook_price: 15000,      // ৳150.00
     },
     {
+      id: "prod_jochhona",
+      title: "জোছনা ও জননীর গল্প (Jochhona O Jononir Golpo)",
+      subtitle: "মুক্তিযুদ্ধের অমর ও মহাকাব্যিক আখ্যান",
+      handle: "jochhona-o-jononir-golpo-humayun-ahmed",
+      description: "হুমায়ূন আহমেদের জীবনের সর্বশ্রেষ্ঠ উপন্যাস। ১৯৭১ সালের মুক্তিযুদ্ধের লোমহর্ষক ও বীরত্বপূর্ণ মহাকাব্যিক চিত্র।",
+      thumbnail: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_anyaprokash",
+      author: "হুমায়ূন আহমেদ (Humayun Ahmed)",
+      isbn: "978-9848682211",
+      categories: ["Liberation War", "Bengali Literature", "Epic Novels"],
+      hardcover_price: 75000,  // ৳750.00
+      ebook_price: 35000,      // ৳350.00
+    },
+    {
+      id: "prod_brishti_scifi",
+      title: "বৃষ্টি ও মেঘমালা (Sci-Fi Classic)",
+      subtitle: "ভবিষ্যত পৃথিবীর রোমাঞ্চকর বৈজ্ঞানিক কল্পকাহিনী",
+      handle: "brishti-o-meghmala-zafar-iqbal",
+      description: "মুহম্মদ জাফর ইকবালের অমর সায়েন্স ফিকশন উপন্যাস। ভবিষ্যত পৃথিবী, কৃত্রিম বুদ্ধিমত্তা ও মহাজাগতিক রহস্য।",
+      thumbnail: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?auto=format&fit=crop&w=600&q=80",
+      publisher_id: "pub_somoy",
+      author: "মুহম্মদ জাফর ইকবাল (Muhammad Zafar Iqbal)",
+      isbn: "978-9844583321",
+      categories: ["Science Fiction", "Bengali Literature", "Thriller"],
+      hardcover_price: 28000,  // ৳280.00
+      ebook_price: 14000,      // ৳140.00
+    },
+    {
       id: "prod_ekattor",
       title: "একাত্তরের দিনগুলি (Ekattorer Dinguli)",
       subtitle: "মুক্তিযুদ্ধের অমর দিনলিপি ও শহীদ জননীর দলিল",
@@ -247,20 +535,6 @@ async function enrichDatabase() {
       categories: ["History", "Liberation War", "Memoirs"],
       hardcover_price: 45000,  // ৳450.00
       ebook_price: 20000,      // ৳200.00
-    },
-    {
-      id: "prod_padma_nodir_majhi",
-      title: "পদ্মা নদীর মাঝি (Padma Nadir Majhi)",
-      subtitle: "বাংলা সাহিত্যের কালজয়ী ধ্রুপদী উপন্যাস",
-      handle: "padma-nadir-majhi-manik-bandopadhyay",
-      description: "মানিক বন্দ্যোপাধ্যায়ের অবিস্মরণীয় নদীকেন্দ্রিক জীবনগাথা ও পদ্মার জেলেদের জীবন সংগ্রামের চিত্র।",
-      thumbnail: "https://images.unsplash.com/photo-1476275466078-4007374efbbe?auto=format&fit=crop&w=600&q=80",
-      publisher_id: "pub_mawla",
-      author: "মানিক বন্দ্যোপাধ্যায় (Manik Bandopadhyay)",
-      isbn: "978-9844101123",
-      categories: ["Bengali Classics", "Novels", "Literature"],
-      hardcover_price: 38000,  // ৳380.00
-      ebook_price: 18000,      // ৳180.00
     },
   ];
 
@@ -397,7 +671,7 @@ async function enrichDatabase() {
     }
   }
 
-  console.log(`✔ Successfully seeded ${books.length} Books with Physical Hardcovers & eBooks in BDT (৳)!`);
+  console.log(`✔ Successfully seeded ${books.length} Books including Islamic Classics, Hadith, Tafsir, Tech & Literature in BDT (৳)!`);
   await client.end();
 }
 
