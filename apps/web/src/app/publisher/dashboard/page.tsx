@@ -19,11 +19,14 @@ import {
   AlertCircle,
   FileText,
   Trash2,
+  Monitor,
+  Smartphone,
 } from "lucide-react";
 
 export default function PublisherDashboard() {
   const { success, info, error: toastError } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
+  const [isDesktopMode, setIsDesktopMode] = useState(false);
 
   const [booksList, setBooksList] = useState<any[]>([
     {
@@ -212,7 +215,39 @@ export default function PublisherDashboard() {
   const totalSales = booksList.reduce((sum, b) => sum + (b.sales || 0), 0);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className={`container mx-auto px-4 py-8 max-w-7xl transition-all ${isDesktopMode ? "min-w-[1080px] overflow-x-auto" : ""}`}>
+      {/* Mobile/Desktop Mode Switcher Bar */}
+      <div className="flex md:hidden items-center justify-between bg-muted/60 px-3.5 py-2 rounded-xl border mb-5 text-xs">
+        <span className="font-medium text-muted-foreground flex items-center gap-1.5">
+          {isDesktopMode ? (
+            <span className="text-primary font-bold">🖥️ Desktop Layout Active</span>
+          ) : (
+            <span>📱 Mobile Layout</span>
+          )}
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            setIsDesktopMode(!isDesktopMode);
+            info(
+              isDesktopMode ? "Switched to Mobile View" : "Switched to Full Desktop View",
+              "Layout Changed"
+            );
+          }}
+          className="flex items-center gap-1.5 px-3 py-1 bg-card border rounded-lg font-bold shadow-sm hover:bg-muted text-foreground transition"
+        >
+          {isDesktopMode ? (
+            <>
+              <Smartphone className="h-3.5 w-3.5 text-primary" /> Mobile Mode
+            </>
+          ) : (
+            <>
+              <Monitor className="h-3.5 w-3.5 text-primary" /> Desktop Mode
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Top Banner */}
       <div className="bg-card border rounded-2xl p-6 sm:p-8 mb-8 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -227,7 +262,7 @@ export default function PublisherDashboard() {
           </p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             onClick={() => setActiveTab("bulk-import")}
             variant="outline"
