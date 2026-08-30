@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/product/ProductCard";
 import { BookReviews } from "@/components/product/BookReviews";
 import { AudiobookPlayer } from "@/components/product/AudiobookPlayer";
+import { EBookReaderModal } from "@/components/reader/EBookReaderModal";
+import { FlashSaleCountdown } from "@/components/product/FlashSaleCountdown";
 import {
   BookOpen,
   Store,
@@ -40,6 +42,7 @@ export default function BookDetailPage() {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [showSampleModal, setShowSampleModal] = useState(false);
+  const [showReaderModal, setShowReaderModal] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
@@ -241,6 +244,9 @@ export default function BookDetailPage() {
               </div>
             </div>
 
+            {/* Live Flash Sale Urgency Badge */}
+            <FlashSaleCountdown dealTitle="Amar Ekushey Boi Mela Special" discountPercent={20} />
+
             {/* Format Selection */}
             {book.variants && book.variants.length > 0 && (
               <div className="my-6">
@@ -282,7 +288,7 @@ export default function BookDetailPage() {
             )}
 
             {/* Quantity and Add to Bag */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 my-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 my-6">
               {!isDigital && (
                 <div className="flex items-center border rounded-lg bg-card px-2 h-11 w-32 justify-between">
                   <button
@@ -312,6 +318,15 @@ export default function BookDetailPage() {
                 className="flex-1 h-11 text-base font-semibold"
               >
                 {isAdding ? "Adding to Bag..." : `Add to Bag • ৳${(((selectedVariant?.price || 0) * quantity) / 100).toFixed(0)}`}
+              </Button>
+
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => setShowReaderModal(true)}
+                className="h-11 font-semibold gap-1.5 border-primary/30"
+              >
+                <BookOpen className="h-4 w-4 text-primary" /> Read Online
               </Button>
 
               <Button
@@ -451,6 +466,15 @@ export default function BookDetailPage() {
           </div>
         </div>
       )}
+
+      {/* In-Browser eBook Reader Modal */}
+      <EBookReaderModal
+        isOpen={showReaderModal}
+        onClose={() => setShowReaderModal(false)}
+        title={book.title}
+        author={book.author}
+        sampleChapter={book.sample_chapter}
+      />
     </div>
   );
 }

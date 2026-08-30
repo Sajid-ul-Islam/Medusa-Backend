@@ -370,16 +370,106 @@ export default function PublisherDashboard() {
         {/* Content View */}
         <div className="lg:col-span-9">
           <div className="bg-card rounded-2xl border p-6 sm:p-8 shadow-sm">
-            {/* Overview Tab */}
+            {/* Overview Tab with Visual Analytics */}
             {activeTab === "overview" && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-xl font-bold mb-1">Bookstore Performance</h2>
+                  <h2 className="text-xl font-bold mb-1">Bookstore Performance &amp; Analytics</h2>
                   <p className="text-xs text-muted-foreground">
-                    Summary of catalog activity and sales performance.
+                    Live telemetry tracking your bookstore sales, format preferences, and revenue splits.
                   </p>
                 </div>
 
+                {/* 7-Day Revenue Bar Chart */}
+                <div className="p-6 bg-card rounded-2xl border shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="font-bold text-sm">7-Day Sales Trend (BDT ৳)</h3>
+                      <p className="text-xs text-muted-foreground">Daily earnings from physical &amp; digital orders</p>
+                    </div>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-500/10 px-2.5 py-1 rounded-full">
+                      +18.4% this week
+                    </span>
+                  </div>
+
+                  {/* Visual Bar Chart */}
+                  <div className="h-44 flex items-end justify-between gap-2 pt-6 pb-2 px-2 border-b">
+                    {[
+                      { day: "Mon", height: "45%", amount: "৳14,200" },
+                      { day: "Tue", height: "60%", amount: "৳19,500" },
+                      { day: "Wed", height: "35%", amount: "৳11,800" },
+                      { day: "Thu", height: "80%", amount: "৳26,400" },
+                      { day: "Fri", height: "95%", amount: "৳31,200" },
+                      { day: "Sat", height: "100%", amount: "৳34,500" },
+                      { day: "Sun", height: "70%", amount: "৳22,800" },
+                    ].map((bar) => (
+                      <div key={bar.day} className="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+                        <div className="opacity-0 group-hover:opacity-100 transition text-[10px] font-mono font-bold text-primary bg-muted px-1.5 py-0.5 rounded shadow-xs">
+                          {bar.amount}
+                        </div>
+                        <div
+                          className="w-full max-w-[36px] bg-primary/80 hover:bg-primary rounded-t-lg transition-all duration-300"
+                          style={{ height: bar.height }}
+                        />
+                        <span className="text-[11px] text-muted-foreground font-semibold">{bar.day}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Breakdown Grid: Format Preferences & Bestsellers */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Format Split */}
+                  <div className="p-5 bg-card rounded-2xl border space-y-3">
+                    <h3 className="font-bold text-sm flex items-center justify-between">
+                      <span>Sales by Format</span>
+                      <span className="text-xs text-muted-foreground font-normal">Physical vs Digital</span>
+                    </h3>
+
+                    <div className="space-y-3 pt-2">
+                      <div>
+                        <div className="flex justify-between text-xs font-semibold mb-1">
+                          <span className="flex items-center gap-1.5">📦 Physical Paperbacks</span>
+                          <span className="font-bold">64% (৳98,300)</span>
+                        </div>
+                        <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div className="h-full bg-primary rounded-full" style={{ width: "64%" }} />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-xs font-semibold mb-1">
+                          <span className="flex items-center gap-1.5">⚡ Instant Digital eBooks</span>
+                          <span className="font-bold">36% (৳55,300)</span>
+                        </div>
+                        <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div className="h-full bg-amber-500 rounded-full" style={{ width: "36%" }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Store Telemetry & Courier Velocity */}
+                  <div className="p-5 bg-card rounded-2xl border space-y-3">
+                    <h3 className="font-bold text-sm flex items-center justify-between">
+                      <span>Logistics &amp; Fulfillment</span>
+                      <span className="text-xs text-emerald-600 font-bold">Pathao Express</span>
+                    </h3>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                      <div className="p-3 bg-muted/40 rounded-xl">
+                        <div className="text-muted-foreground text-[10px]">Avg Dispatch Time</div>
+                        <div className="text-base font-black mt-0.5">3.2 Hours</div>
+                      </div>
+                      <div className="p-3 bg-muted/40 rounded-xl">
+                        <div className="text-muted-foreground text-[10px]">On-Time Delivery</div>
+                        <div className="text-base font-black text-emerald-600 mt-0.5">99.2%</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Store Profile & Revenue Split Cards */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-5 bg-muted/40 rounded-xl border space-y-3">
                     <h3 className="font-bold text-sm flex items-center gap-2">

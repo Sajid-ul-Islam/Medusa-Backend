@@ -10,7 +10,7 @@ import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 
 export function Header() {
   const router = useRouter();
-  const { cart, isInitialized } = useCart();
+  const { cart, isInitialized, openDrawer } = useCart();
   const [searchQuery, setSearchQuery] = useState("");
 
   const itemCount =
@@ -76,16 +76,21 @@ export function Header() {
         <div className="flex items-center space-x-3">
           <ThemeSwitcher />
 
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative" aria-label="Shopping Cart">
-              <ShoppingCart className="h-5 w-5" />
-              {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-bold animate-in zoom-in-50">
-                  {itemCount}
-                </span>
-              )}
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={openDrawer}
+            className="relative"
+            aria-label="Shopping Cart"
+          >
+            <ShoppingCart className="h-5 w-5" />
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-bold animate-in zoom-in-50">
+                {itemCount}
+              </span>
+            )}
+          </Button>
+
           <Button asChild size="sm">
             <Link href="/publisher/dashboard">
               <Store className="mr-1.5 h-4 w-4" />
