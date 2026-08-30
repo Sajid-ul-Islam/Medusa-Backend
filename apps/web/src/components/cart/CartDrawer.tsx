@@ -16,7 +16,12 @@ import {
   ShieldCheck,
   Tag,
   Zap,
+  Truck,
+  Gift,
+  CheckCircle2,
 } from "lucide-react";
+
+const FREE_DELIVERY_THRESHOLD = 150000; // ৳1,500 in poisha
 
 export function CartDrawer() {
   const router = useRouter();
@@ -31,6 +36,9 @@ export function CartDrawer() {
     amount?: number;
     discountTotal: number;
   } | null>(null);
+
+  const [isGift, setIsGift] = useState(false);
+  const [giftNote, setGiftNote] = useState("");
 
   // Close drawer on Escape key
   useEffect(() => {
@@ -48,7 +56,11 @@ export function CartDrawer() {
   const items = cart?.items || [];
   const subtotal = cart?.subtotal || 0;
   const discountVal = appliedDiscount ? appliedDiscount.discountTotal : 0;
-  const total = Math.max(0, subtotal - discountVal);
+  const giftFee = isGift ? 5000 : 0; // ৳50 in poisha
+  const total = Math.max(0, subtotal - discountVal + giftFee);
+
+  const progressPercent = Math.min(100, Math.round((subtotal / FREE_DELIVERY_THRESHOLD) * 100));
+  const remainingForFreeDelivery = Math.max(0, (FREE_DELIVERY_THRESHOLD - subtotal) / 100);
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +84,20 @@ export function CartDrawer() {
     }
   };
 
+  const handleGiftToggle = (checked: boolean) => {
+    setIsGift(checked);
+    if (checked) {
+      sessionStorage.setItem("bookhub_gift_option", JSON.stringify({ isGift: true, giftNote }));
+      info("Added Luxury Gift Packaging & Card (+৳50)", "Gift Wrap Added");
+    } else {
+      sessionStorage.removeItem("bookhub_gift_option");
+    }
+  };
+
   const handleProceedToCheckout = () => {
+    if (isGift) {
+      sessionStorage.setItem("bookhub_gift_option", JSON.stringify({ isGift: true, giftNote }));
+    }
     closeDrawer();
     router.push("/checkout");
   };
@@ -88,21 +113,42 @@ export function CartDrawer() {
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
         <div className="w-screen max-w-md bg-card border-l shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-300">
           {/* Header */}
-          <div className="p-5 border-b flex items-center justify-between bg-muted/20">
-            <div className="flex items-center gap-2.5 font-bold text-base">
-              <ShoppingBag className="h-5 w-5 text-primary" />
-              <span>Your Book Bag</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
-                {items.length} {items.length === 1 ? "item" : "items"}
-              </span>
+          <div className="p-5 border-b bg-muted/20 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5 font-bold text-base">
+                <ShoppingBag className="h-5 w-5 text-primary" />
+                <span>Your Book Bag</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
+                  {items.length} {items.length === 1 ? "item" : "items"}
+                </span>
+              </div>
+              <button
+                onClick={closeDrawer}
+                className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition"
+                aria-label="Close cart drawer"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
-            <button
-              onClick={closeDrawer}
-              className="p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition"
-              aria-label="Close cart drawer"
-            >
-              <X className="h-5 w-5" />
-            </button>
+
+            {/* Free Delivery Threshold Progress Meter */}
+            <div className="p-2.5 rounded-xl bg-background border shadow-2xs space-y-1.5">
+              <div className="flex items-center justify-between text-xs font-semibold">
+                <span className="flex items-center gap-1.5 text-foreground">
+                  <Truck className="h-3.5 w-3.5 text-primary" />
+                  {remainingForFreeDelivery === 0
+                    ? "🎉 You unlocked FREE Delivery!"
+                    : `Add ৳${remainingForFreeDelivery.toFixed(0)} more for FREE Delivery`}
+                </span>
+                <span className="text-[11px] font-bold text-primary">{progressPercent}%</span>
+              </div>
+              <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-500 to-emerald-500 rounded-full transition-all duration-500"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Items List */}
@@ -116,7 +162,7 @@ export function CartDrawer() {
                 <p className="text-xs text-muted-foreground max-w-xs">
                   Browse our independent publisher titles and add your favorite physical books or eBooks.
                 </p>
-                <Button size="sm" onClick={closeDrawer} asChild className="mt-2">
+                <Button size="sm" onClick={closeDrawer} asChild className="mt-2 font-bold">
                   <Link href="/books">Explore Catalog →</Link>
                 </Button>
               </div>
@@ -203,7 +249,44 @@ export function CartDrawer() {
 
           {/* Footer & Checkout Action */}
           {items.length > 0 && (
-            <div className="p-5 border-t bg-muted/20 space-y-4">
+            <div className="p-5 border-t bg-muted/20 space-y-3.5">
+              {/* Gift a Book Option */}
+              <div className="p-3 rounded-xl border bg-background/80 space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold">
+                  <input
+                    type="checkbox"
+                    checked={isGift}
+                    onChange={(e) => handleGiftToggle(e.target.checked)}
+                    className="rounded text-primary focus:ring-primary h-4 w-4"
+                  />
+                  <span className="flex items-center gap-1.5">
+                    <Gift className="h-3.5 w-3.5 text-pink-500" />
+                    <span>Send as a Gift (+৳50 Ribbon &amp; Card)</span>
+                  </span>
+                </label>
+
+                {isGift && (
+                  <div className="pt-1.5 animate-in fade-in">
+                    <input
+                      type="text"
+                      placeholder="Greeting note: e.g. Happy Birthday Rafid!..."
+                      value={giftNote}
+                      onChange={(e) => {
+                        setGiftNote(e.target.value);
+                        sessionStorage.setItem(
+                          "bookhub_gift_option",
+                          JSON.stringify({ isGift: true, giftNote: e.target.value })
+                        );
+                      }}
+                      className="w-full h-8 px-2.5 text-xs rounded-lg border bg-muted/30 focus:outline-none focus:ring-1 focus:ring-primary"
+                    />
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      Price invoice will be hidden from the recipient package.
+                    </p>
+                  </div>
+                )}
+              </div>
+
               {/* Promo Voucher Mini Form */}
               {appliedDiscount ? (
                 <div className="p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between text-xs">
@@ -247,6 +330,12 @@ export function CartDrawer() {
                   <div className="flex justify-between text-emerald-600 font-semibold">
                     <span>Discount ({appliedDiscount.code})</span>
                     <span>-৳{(appliedDiscount.discountTotal / 100).toFixed(0)}</span>
+                  </div>
+                )}
+                {isGift && (
+                  <div className="flex justify-between text-pink-600 font-semibold">
+                    <span>Gift Packaging &amp; Card</span>
+                    <span>+৳50</span>
                   </div>
                 )}
                 <div className="flex justify-between font-extrabold text-sm text-foreground pt-1 border-t">

@@ -66,6 +66,13 @@ export function Header() {
             Publishers
           </Link>
           <Link
+            href="/request-book"
+            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            Request a Book
+          </Link>
+          <Link
             href="/publisher/register"
             className="text-sm font-medium text-primary hover:underline transition-colors flex items-center gap-1"
           >

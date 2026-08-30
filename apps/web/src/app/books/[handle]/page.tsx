@@ -27,6 +27,9 @@ import {
   X,
   Minus,
   Plus,
+  MessageCircle,
+  PackageCheck,
+  Sparkles,
 } from "lucide-react";
 
 export default function BookDetailPage() {
@@ -341,6 +344,70 @@ export default function BookDetailPage() {
               >
                 Buy Now
               </Button>
+            </div>
+
+            {/* 1-Click WhatsApp Quick Order Button */}
+            <a
+              href={`https://wa.me/8801700000000?text=${encodeURIComponent(
+                `Hello BookHub, I want to order "${book.title}" (৳${(((selectedVariant?.price || 0) * quantity) / 100).toFixed(0)}).\n\nMy Delivery Details:\nName:\nPhone:\nAddress:`
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full h-10 rounded-xl border border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-bold text-xs transition shadow-2xs"
+            >
+              <MessageCircle className="h-4 w-4 fill-emerald-500 text-white" />
+              <span>💬 1-Click WhatsApp Quick Order (হোয়াটসঅ্যাপে অর্ডার করুন)</span>
+            </a>
+
+            {/* Frequently Bought Together (Bundle & Save) */}
+            <div className="my-6 p-5 rounded-2xl border bg-card shadow-xs space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-extrabold text-sm flex items-center gap-2">
+                  <PackageCheck className="h-4 w-4 text-primary" /> Frequently Bought Together
+                </h3>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600">
+                  Save ৳150 Bundle
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="h-14 w-11 rounded-lg bg-muted border overflow-hidden relative">
+                    {book.thumbnail && <img src={book.thumbnail} alt={book.title} className="w-full h-full object-cover" />}
+                  </div>
+                  <span className="font-bold text-lg text-muted-foreground">+</span>
+                  <div className="h-14 w-11 rounded-lg bg-muted border overflow-hidden relative">
+                    <img
+                      src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=300&q=80"
+                      alt="Recommended Companion"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-1 min-w-0 text-center sm:text-left">
+                  <div className="font-semibold truncate">{book.title} + Companion Edition</div>
+                  <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
+                    <span className="text-sm font-black text-primary">
+                      ৳{(((selectedVariant?.price || 0) + 38000) / 100).toFixed(0)}
+                    </span>
+                    <span className="text-xs text-muted-foreground line-through">
+                      ৳{(((selectedVariant?.price || 0) + 53000) / 100).toFixed(0)}
+                    </span>
+                  </div>
+                </div>
+
+                <Button
+                  size="sm"
+                  onClick={async () => {
+                    await handleAddToCart();
+                    success(`Added 2-Book Bundle to your bag (Saved ৳150)!`, "Bundle Added");
+                  }}
+                  className="w-full sm:w-auto font-bold text-xs gap-1.5 shadow-xs"
+                >
+                  <Sparkles className="h-3.5 w-3.5" /> Add Bundle to Bag
+                </Button>
+              </div>
             </div>
 
             {/* Book Metadata Grid */}
