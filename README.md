@@ -1,61 +1,48 @@
-# 📚 BookHub: Multi-Store Book Publishing & Author Marketplace
+# 📚 BookHub: Multi-Store Book Publishing Marketplace
 
-A production-grade, SaaS-enabled multi-publisher book marketplace platform built with **Medusa.js v1 Backend**, **Next.js 16 (Turbopack) Frontend**, and **Supabase Cloud PostgreSQL**.
+A production-grade, multi-store book publishing marketplace built with **Medusa.js v1 Backend**, **Next.js 16 (Turbopack) Frontend**, and **Supabase Cloud PostgreSQL**.
 
 ---
 
 ## 🌟 Key Platform Features
 
-### 🛒 1. B2C Consumer & Reader Experience Suite
-* **Slide-Over Quick Cart Drawer**: Opens automatically upon adding books with quantity adjustments, promo inputs, and **1-Click bKash Express Checkout**.
-* **🚚 Free Delivery Threshold Tracker**: Live visual progress meter encouraging cart additions (e.g. *"Add ৳320 more for FREE Delivery across Bangladesh! 🚚"*).
-* **🎁 "Gift a Book" with Custom Greeting Note**: 1-click gift option with luxury ribbon wrapping (+৳50) and customized handwritten messages, automatically hiding price invoices on packing slips.
-* **📦 Frequently Bought Together (Bundle & Save)**: Dynamic companion book packs with 1-click bundle addition and savings badges (Save ৳150).
-* **💬 1-Click WhatsApp Quick Order**: Instant order trigger for non-tech readers, pre-populating WhatsApp with book title, variant price, and delivery address templates.
-* **📖 In-Browser Interactive eBook Reader**: Distraction-free web reader with Warm Sepia, Classic White, and Midnight Dark themes, font scaling (`A-` / `A+`), chapter navigators, and dynamic anti-piracy watermarking.
-* **🪙 BookHub Rewards & Daily Reading Streaks**: Reader coin wallet (🪙 150 welcome bonus), daily reading streak bonuses (🔥 +25 coins/day), and 1-click coin redemption at checkout.
-* **📖 Customer "Request a Book" Portal (`/request-book`)**: Sourcing portal where readers can request rare, out-of-print, Islamic, academic, or foreign titles broadcasted across 15+ publisher warehouses.
-* **💖 Personal Bookshelf Wishlist**: 1-click heart button saving physical books and eBooks to localStorage reading lists.
-* **🎙️ Audiobook Voice Preview Player**: Embedded sample player with waveform scrubber and variable playback speeds (`1x`, `1.25x`, `1.5x`, `2x`).
-* **⭐ Customer Reviews & Verified Buyer Badges**: 1–5 star rating distributions with verified purchaser badges.
-
----
-
-### 🏪 2. Publisher SaaS Portal & Power Tools
-* **👑 SaaS Tier Subscriptions & Billing**:
-  * **Starter (Free)**: 15% marketplace commission, up to 25 titles, standard dropoff.
-  * **Pro Publisher (৳1,499/mo)**: 8% platform cut, unlimited titles, branded subdomain (`pub.bookhub.bd`), 48h direct bKash payouts, priority Pathao pickup.
-  * **Enterprise Flagship (৳4,999/mo)**: **4% lowest platform cut**, custom domain (`books.pub.com`), instant bank settlement, dedicated DRM watermarking, bulk barcode thermal printers.
-  * Monthly invoice billing history with 1-click PDF receipt downloads.
-* **🎨 Storefront & Branding Customizer**: Custom banner, logo, brand tagline, bio/story, physical address, and official Facebook page with a **Live Customer Storefront Preview Canvas**.
-* **📊 Visual Sales Analytics & Telemetry**: 7-day revenue trend bar charts, physical paperback (64%) vs. digital eBook (36%) format splits, and courier dispatch velocity trackers.
-* **📁 30-Second Excel/CSV Bulk Book Importer**: 1-click sample CSV template download (`bookhub_bulk_catalog_template.csv`), drag-and-drop parser, preview table, and bulk upload.
-* **🖥️ 1-Click Desktop Mode Switcher on Mobile**: Dedicated toggle allowing mobile publishers to inspect spreadsheets and management tables in full desktop layout.
-
----
-
-### 🇧🇩 3. Bangladeshi Payment Gateways & Localized Currency (BDT ৳)
-* **bKash Tokenized Checkout**: Fast mobile payment with OTP/PIN flow & TrxID verification.
-* **Nagad Direct Pay**: Direct mobile wallet checkout.
-* **SSLCommerz Multi-Gateway**: Visa, Mastercard, AMEX, DBBL Nexus Card, City Bank, BRAC Bank, Internet Banking.
+### 🇧🇩 1. Bangladeshi Payment Gateways & Localized Currency (BDT ৳)
+* **bKash Direct Checkout**: Fast mobile account payment with OTP/PIN flow & instant TrxID confirmation.
+* **Nagad Mobile Wallet**: Direct wallet checkout with transaction ID verification.
+* **SSLCommerz Multi-Gateway**: Visa, Mastercard, DBBL Nexus Card, City Bank, BRAC Bank, Internet Banking.
 * **Cash on Delivery (COD)**: Physical doorstep delivery payment across all 64 districts in Bangladesh.
 * **Currency**: Standardized **Bangladeshi Taka (BDT - ৳)** across storefront, database, carts, and invoices.
 
----
+### 🏪 2. Multi-Store Publisher Architecture
+* Independent bookstore and author profiles (*O'Reilly Media, Oxford Academic Press, Penguin Classics*).
+* Dedicated **Publisher Portal** (`/publisher/dashboard`) with:
+  * Book catalog & physical inventory manager.
+  * Automated **85% Publisher / 15% Platform Commission** revenue splits.
+  * Configurable **bKash Merchant Account** & **Bangladeshi Bank Account** wire transfers.
 
-### 🔌 4. SaaS Modular Provider Architecture (`apps/web/src/lib/providers/`)
-* **Modular Courier Provider (`ICourierProvider`)**: Pluggable adapters for **Pathao Express** and **Steadfast Courier** with automatic fee calculation and 4-step live tracking.
-* **Modular Payment Provider (`IPaymentProvider`)**: Swappable adapters for **bKash**, **Nagad**, and **SSLCommerz**.
-* **Modular DRM & Anti-Piracy Engine (`IDRMProvider`)**: Dynamic watermarking stamping customer email, order ID, TrxID, and SHA256 verification hashes into eBooks.
-* **Multi-Tenant Subdomain Edge Router (`proxy.ts`)**: Next.js 16 Edge proxy router resolving publisher subdomains (`batighar.bookhub.com.bd`) to tenant storefronts with SaaS security headers.
-
----
-
-### 🎨 5. 3-Palette Theme Switcher & PWA Support
+### 🎨 3. Dynamic Multi-Theme Switcher (3 Selectable Palettes)
 * **Warm Literary** *(Default)*: Amber gold (`#d97706`), warm parchment cream (`#faf8f5`), midnight stone.
 * **Oxford Forest**: Academic forest emerald (`#059669`), sage highlights, warm ivory background.
 * **Modern Indigo**: Tech indigo (`#4f46e5`), minimalist obsidian, high-contrast dark elements.
-* **Progressive Web App (PWA)**: Silent background Service Worker caching, web app manifest, and crisp vector icons.
+* **Persistent Theme Selector**: Switcher in navbar saving user choice to `localStorage` with ambient glow hero lighting.
+
+### 🛡️ 4. Anti-Piracy Digital Watermarking Engine
+* Dynamically stamps purchaser identity (*Name, Email, Order #, Payment TrxID, and SHA256 DRM Hash*) directly onto eBook PDF and ePub license downloads.
+
+### 📱 5. Mobile App-Like Bottom Navigation Bar
+* Sticky bottom navigation bar for mobile devices (`Home`, `Books`, `Bag Counter`, `Publishers`, `Admin`).
+
+### ⭐ 6. Customer Reviews & Verified Buyer Badges
+* 1–5 star rating distributions, verified purchaser badges, and interactive "Write a Review" modal.
+
+### 🎙️ 7. Audiobook Sample Preview Player
+* Embedded voice preview player with waveform scrubber and variable playback speeds (`1x`, `1.25x`, `1.5x`, `2x`).
+
+### 🏷️ 8. Promo Codes & Discount Voucher Engine
+* Integrated cart voucher validator (`BOIMELA20` for 20% off, `EID100` for ৳100 flat discount).
+
+### 🚚 9. Pathao / Steadfast Courier Live Tracking
+* 4-step physical delivery tracker (*Order Placed → Packed → In Transit → Out for Delivery*).
 
 ---
 
@@ -63,27 +50,24 @@ A production-grade, SaaS-enabled multi-publisher book marketplace platform built
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    NEXT.JS 16 STOREFRONT                    │  👉 Host: VERCEL
+│                    NEXT.JS STOREFRONT                       │  👉 Deploy to: VERCEL
 │  • Public Marketplace (/books, /publishers, /cart)          │
-│  • Customer Book Request Portal (/request-book)             │
-│  • Publisher SaaS Portal (/publisher/dashboard)             │
+│  • Publisher Portal (/publisher/dashboard)                  │
 │  • Admin Management Portal (/admin/login, /admin/dashboard) │
-│  • Multi-Tenant Edge Router (proxy.ts)                      │
 └──────────────────────────────┬──────────────────────────────┘
                                │
                                ▼ (REST API / HTTPS)
 ┌─────────────────────────────────────────────────────────────┐
-│                    MEDUSA.JS ENGINE                         │  👉 Host: RENDER / RAILWAY
+│                    MEDUSA.JS ENGINE                         │  👉 Deploy to: RENDER / RAILWAY
 │  • Express Server on port 9000                              │
 │  • Embedded Admin Portal (https://.../admin)                │
-│  • bKash, Nagad, SSLCommerz Provider Services               │
+│  • bKash, Nagad, SSLCommerz Services                        │
 │  • Multi-Vendor Publisher Route Handlers                    │
 └──────────────────────────────┬──────────────────────────────┘
                                │
                                ▼ (IPv4 Pooler with SSL)
 ┌─────────────────────────────────────────────────────────────┐
 │                 SUPABASE CLOUD POSTGRESQL                   │  👉 Host: SUPABASE
-│  • 15 Verified Publishers & 20+ Physical/Digital Books     │
 │  • 78 Core Medusa Tables + Publisher Entity                 │
 │  • BDT (৳) Default Currency Ledger                          │
 │  • Payment & Fulfillment Provider Registries                │
@@ -92,23 +76,51 @@ A production-grade, SaaS-enabled multi-publisher book marketplace platform built
 
 ---
 
-## 📚 Seeded Catalog Summary
-
-The database and storefront include **15 verified publishing houses** and **20+ curated titles**:
-
-* **Islamic Literature & Hadith**: Guardian Publications, Somokalin Prokashon, Islamic Foundation Bangladesh, Shian Publications (*Paradoxical Sajid, Bela Phurabar Age, Ar-Raheeq Al-Makhtum, Tafsir Maariful Quran, Sahih Bukhari*).
-* **Bengali Classics & Fiction**: Batighar, Prothoma, Mawla Brothers, Somoy, Anyaprokash, Tamralipi (*Jochhona O Jononir Golpo, Devi, Shongkhonil Karagar, Dipaboli, Ekattorer Dinguli, Cratcher Colonel*).
-* **Technology & Computer Science**: O'Reilly Media, MIT Press, Oxford Academic (*Designing Data-Intensive Applications, Clean Architecture, Introduction to Algorithms CLRS 4th Ed, Deep Learning, Grokking Algorithms*).
-* **Global Classics & Self-Improvement**: Penguin Classics, HarperCollins (*Atomic Habits, Sapiens, The Alchemist, The Great Gatsby*).
-
----
-
 ## 🔑 Default Master Admin Credentials
 
 * **Admin Portal (Render)**: `https://medusa-backend-p4cl.onrender.com/admin`
-* **Admin Portal (Storefront)**: `https://your-frontend.vercel.app/admin/login`
+* **Admin Portal (Vercel)**: `https://your-frontend.vercel.app/admin/login`
 * **Email**: `admin@medusa-test.com`
 * **Password**: `supersecret`
+
+---
+
+## ⚙️ Environment Variables Setup
+
+### 1. Render Web Service (Backend)
+```env
+NODE_ENV=production
+PORT=9000
+DATABASE_URL=postgresql://postgres.plltvinvmifjxotzalis:Tt2khyJ7OGwjk1H2@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
+DATABASE_DIRECT_URL=postgresql://postgres:Tt2khyJ7OGwjk1H2@db.plltvinvmifjxotzalis.supabase.co:5432/postgres
+SUPABASE_URL=https://plltvinvmifjxotzalis.supabase.co
+SUPABASE_ANON_KEY=sb_publishable_-oQD3lFkWu9s76ZcQfC0xg_AO7MVzdK
+JWT_SECRET=supersecret_medusa_jwt_key_2026
+COOKIE_SECRET=supersecret_medusa_cookie_key_2026
+STORE_CORS=https://*.vercel.app,http://localhost:3000
+ADMIN_CORS=https://*.vercel.app,http://localhost:3000,http://localhost:9000
+AUTH_CORS=https://*.vercel.app,http://localhost:3000,http://localhost:9000
+MEDUSA_ADMIN_ONBOARDING_TYPE=default
+OPEN_BROWSER=false
+```
+
+* **Root Directory**: `apps/backend`
+* **Build Command**: `npm install --legacy-peer-deps && npm run build:server`
+* **Start Command**: `node index.js`
+
+---
+
+### 2. Vercel Project (Frontend)
+```env
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://medusa-backend-p4cl.onrender.com
+NEXT_PUBLIC_SUPABASE_URL=https://plltvinvmifjxotzalis.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_-oQD3lFkWu9s76ZcQfC0xg_AO7MVzdK
+NEXT_PUBLIC_APP_NAME=BookHub
+NEXT_PUBLIC_DEFAULT_CURRENCY=bdt
+NEXT_PUBLIC_CURRENCY_SYMBOL=৳
+```
+
+* **Root Directory**: `apps/web`
 
 ---
 
@@ -121,13 +133,10 @@ npm install --legacy-peer-deps
 # 2. Build backend server
 cd apps/backend && npm run build:server
 
-# 3. Seed live database catalog (Publishers & Books)
-node seed-catalog.js
-
-# 4. Start Medusa backend (runs on http://localhost:9000)
+# 3. Start Medusa backend (runs on http://localhost:9000)
 node index.js
 
-# 5. In a separate terminal, start Next.js storefront (runs on http://localhost:3000)
+# 4. In a separate terminal, start Next.js storefront (runs on http://localhost:3000)
 cd apps/web && npm run dev
 ```
 
@@ -142,13 +151,10 @@ cd apps/web && npm run dev
 │   │   ├── src/api/           # REST endpoints (publishers, payments, auth)
 │   │   ├── src/models/        # TypeORM entities (Publisher, Onboarding)
 │   │   ├── src/services/      # Business logic (bKash, SSLCommerz, Publisher)
-│   │   ├── seed-catalog.js    # PostgreSQL catalog enrichment script
 │   │   └── admin-portal.js    # Self-contained Admin UI served on Render
-│   └── web/                   # Next.js 16 storefront (Turbopack)
-│       ├── src/app/           # App router (/books, /publishers, /cart, /checkout, /request-book)
-│       ├── src/components/    # UI components (CartDrawer, EBookReaderModal, FlashSaleCountdown)
-│       ├── src/context/       # Contexts (CartContext, ThemeContext, RewardsContext)
-│       ├── src/lib/providers/ # Modular adapters (courier.ts, payment.ts, drm.ts)
-│       └── src/proxy.ts       # Next.js 16 Multi-tenant edge router
+│   └── web/                   # Next.js 16 storefront
+│       ├── src/app/           # App router (/books, /publishers, /cart, /checkout)
+│       ├── src/components/    # UI components (AudiobookPlayer, BookReviews, ThemeSwitcher)
+│       └── src/context/       # Contexts (CartContext, ThemeContext)
 └── package.json               # Root workspace configuration
 ```
