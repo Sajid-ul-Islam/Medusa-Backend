@@ -5,11 +5,16 @@ export function proxy(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
 
+  // Check if hostname is a raw IP address (e.g. 192.168.68.102 or 127.0.0.1)
+  const isIpAddress = /^(\d{1,3}\.){3}\d{1,3}(:\d+)?$/.test(hostname);
+
   // Define root domains
   const rootDomains = ["localhost:3000", "bookhub.com.bd", "bookhub.vercel.app"];
-  const isRootDomain = rootDomains.some(
-    (domain) => hostname === domain || hostname === `www.${domain}`
-  );
+  const isRootDomain =
+    isIpAddress ||
+    rootDomains.some(
+      (domain) => hostname === domain || hostname === `www.${domain}`
+    );
 
   // Exclude static assets, API, and Next internal files
   const isStatic =
