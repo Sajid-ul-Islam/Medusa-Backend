@@ -1,10 +1,9 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { api, SAMPLE_PUBLISHERS } from "@/lib/medusa";
+import { getPublisherByHandleServer } from "@/lib/api/publishers";
+import { getProductsServer } from "@/lib/api/products";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,134 +11,122 @@ import {
   MapPin,
   CheckCircle2,
   BookOpen,
-  Calendar,
-  Search,
   ArrowLeft,
   Mail,
+  Globe,
+  Sparkles,
 } from "lucide-react";
 
-export default function PublisherStorefrontPage() {
-  const params = useParams();
-  const publisherHandle = params?.id as string;
+interface Props {
+  params: Promise<{ id: string }>;
+}
 
-  const [publisher, setPublisher] = useState<any | null>(null);
-  const [books, setBooks] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    async function loadPublisherData() {
-      if (!publisherHandle) return;
-      setIsLoading(true);
-      try {
-        const pubResponse = await api.getPublisher(publisherHandle);
-        setPublisher(pubResponse.publisher);
-
-        const booksResponse = await api.getProducts({
-          publisher_handle: publisherHandle,
-          limit: 20,
-        });
-        setBooks(booksResponse.products || []);
-      } catch (err) {
-        console.error("Failed to load publisher storefront:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadPublisherData();
-  }, [publisherHandle]);
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-4 py-16 animate-pulse space-y-6">
-        <div className="h-48 bg-muted rounded-2xl w-full" />
-        <div className="h-8 bg-muted rounded w-1/4" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="aspect-[3/4] bg-muted rounded-xl" />
-          ))}
-        </div>
-      </div>
-    );
-  }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const { publisher } = await getPublisherByHandleServer(id);
 
   if (!publisher) {
-    return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-3xl font-bold mb-3">Publisher Not Found</h1>
-        <p className="text-muted-foreground mb-8">
-          The publisher or bookstore you are looking for does not exist.
-        </p>
-        <Button asChild>
-          <Link href="/publishers">Browse All Publishers</Link>
-        </Button>
-      </div>
-    );
+    return {
+      title: "Publisher Not Found | BookHub",
+    };
   }
 
-  const filteredBooks = books.filter(
-    (b) =>
-      b.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.categories?.some((c: string) => c.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+  const desc = publisher.description ? publisher.description.slice(0, 160) : `Official bookstore for ${publisher.name}`;
+  const ogImages = publisher.logo_url ? [publisher.logo_url] : [];
+
+  return {
+    title: `${publisher.name} — Official Online Store | BookHub`,
+    description: desc,
+    openGraph: {
+      title: `${publisher.name} Storefront`,
+      description: desc,
+      images: ogImages,
+    },
+  };
+}
+
+export default async function PublisherStorefrontPage({ params }: Props) {
+  const { id: publisherHandle } = await params;
+  const { publisher } = await getPublisherByHandleServer(publisherHandle);
+
+  if (!publisher) {
+    notFound();
+  }
+
+  const { products: books } = await getProductsServer({
+    publisher_handle: publisherHandle,
+    limit: 24,
+  });
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Publisher Banner Header */}
-      <div className="relative bg-muted/60 border-b overflow-hidden">
-        {publisher.banner_url && (
-          <div className="absolute inset-0 opacity-20">
-            <Image
-              src={publisher.banner_url}
-              alt={publisher.name}
-              fill
-              className="object-cover"
-            />
+      {/* Publisher Branded Hero Banner */}
+      <div className="relative h-64 md:h-80 w-full bg-muted overflow-hidden">
+        {publisher.banner_url ? (
+          <Image
+            src={publisher.banner_url}
+            alt={publisher.name}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover brightness-75"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-r from-primary/80 to-primary/40 flex items-center justify-center">
+            <Store className="h-16 w-16 text-primary-foreground/30" />
           </div>
         )}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
 
-        <div className="container mx-auto px-4 py-10 relative">
+        <div className="container mx-auto px-4 absolute top-4 left-0 right-0">
           <Link
             href="/publishers"
-            className="inline-flex items-center text-xs font-semibold text-muted-foreground hover:text-primary mb-6 gap-1"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/80 backdrop-blur text-xs font-bold hover:bg-background transition text-foreground"
           >
-            <ArrowLeft className="h-3.5 w-3.5" /> Back to Publishers Directory
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to All Publishers
           </Link>
+        </div>
+      </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="relative h-24 w-24 rounded-2xl overflow-hidden border-2 border-background shadow-xl bg-card flex-shrink-0">
+      {/* Publisher Info Header */}
+      <div className="container mx-auto px-4 relative -mt-20 z-10">
+        <div className="bg-card border rounded-2xl p-6 sm:p-8 shadow-xl">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+            {/* Logo */}
+            <div className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-2xl overflow-hidden border-4 border-background shadow-lg bg-muted flex-shrink-0 flex items-center justify-center">
               {publisher.logo_url ? (
                 <Image
                   src={publisher.logo_url}
                   alt={publisher.name}
                   fill
+                  sizes="112px"
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-primary/10 text-primary">
-                  <Store className="h-10 w-10" />
-                </div>
+                <Store className="h-10 w-10 text-primary" />
               )}
             </div>
 
-            <div className="flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            {/* Details */}
+            <div className="flex-1 space-y-2">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
                   {publisher.name}
                 </h1>
                 {publisher.verified && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
                     <CheckCircle2 className="h-3.5 w-3.5" /> Verified Publisher
                   </span>
                 )}
               </div>
 
-              <p className="text-sm text-muted-foreground max-w-2xl mt-1">
-                {publisher.description}
-              </p>
+              {publisher.description && (
+                <p className="text-sm text-muted-foreground max-w-3xl leading-relaxed">
+                  {publisher.description}
+                </p>
+              )}
 
-              <div className="flex flex-wrap items-center gap-4 mt-4 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-2 text-xs text-muted-foreground font-medium">
                 {publisher.location && (
                   <div className="flex items-center gap-1">
                     <MapPin className="h-3.5 w-3.5 text-primary" />
@@ -148,73 +135,56 @@ export default function PublisherStorefrontPage() {
                 )}
                 <div className="flex items-center gap-1">
                   <BookOpen className="h-3.5 w-3.5 text-primary" />
-                  <span>{books.length} Published Books</span>
+                  <span>{publisher.total_books || books.length || 24} Published Titles</span>
                 </div>
+                {publisher.website && (
+                  <a
+                    href={publisher.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 hover:text-primary transition"
+                  >
+                    <Globe className="h-3.5 w-3.5" /> Official Website
+                  </a>
+                )}
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="flex sm:flex-col gap-2 w-full sm:w-auto">
-              <Button variant="outline" className="flex-1 gap-2 text-xs" asChild>
-                <a href={`mailto:contact@${publisher.handle}.com`}>
-                  <Mail className="h-3.5 w-3.5" /> Contact Store
-                </a>
-              </Button>
+        {/* Books Grid */}
+        <section className="mt-12 space-y-6">
+          <div className="flex items-center justify-between border-b pb-4">
+            <div>
+              <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                Official Catalog
+              </span>
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight">
+                Books by {publisher.name}
+              </h2>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Publisher Books Catalog */}
-      <div className="container mx-auto px-4 py-10">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h2 className="text-2xl font-bold">Store Catalog</h2>
-            <p className="text-sm text-muted-foreground">
-              Showing books published by {publisher.name}
-            </p>
+            <span className="text-xs text-muted-foreground font-semibold">
+              Showing {books.length} Books
+            </span>
           </div>
 
-          {/* Catalog Search Bar */}
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search in this store..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-10 pl-9 pr-3 rounded-lg border bg-card text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            />
-          </div>
-        </div>
-
-        {filteredBooks.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredBooks.map((product) => {
-              const firstVariant = product.variants?.[0];
-              return (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  title={product.title}
-                  handle={product.handle}
-                  thumbnail={product.thumbnail}
-                  price={firstVariant?.price || 0}
-                  publisher={publisher}
-                  variantId={firstVariant?.id}
-                />
-              );
-            })}
-          </div>
-        ) : (
-          <div className="text-center py-16 bg-muted/20 rounded-2xl border">
-            <p className="text-lg font-semibold mb-2">No matching books found</p>
-            <p className="text-sm text-muted-foreground">
-              Try searching with different keywords.
-            </p>
-          </div>
-        )}
+          {books.length === 0 ? (
+            <div className="text-center py-16 border rounded-2xl bg-muted/20">
+              <BookOpen className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+              <h3 className="font-bold text-base">No books found</h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                This publisher has not published any books yet.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              {books.map((book) => (
+                <ProductCard key={book.id} product={book} />
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
 }
-
