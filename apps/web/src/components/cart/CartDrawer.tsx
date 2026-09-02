@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   X,
   ShoppingBag,
@@ -191,10 +192,12 @@ export function CartDrawer() {
                 >
                   <div className="w-16 h-20 bg-muted rounded-lg overflow-hidden flex-shrink-0 border relative">
                     {item.thumbnail ? (
-                      <img
+                      <Image
                         src={item.thumbnail}
                         alt={item.title}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="64px"
+                        className="object-cover"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-lg">

@@ -5,10 +5,11 @@ import { api, SAMPLE_BOOKS } from "@/lib/medusa";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Sparkles, ArrowRight, BookOpen } from "lucide-react";
+import { Sparkles, ArrowRight, BookOpen, Layers } from "lucide-react";
+import { Book } from "@/types";
 
 export function FeaturedProducts() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Book[]>([]);
   const [activeCategory, setActiveCategory] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,11 +18,11 @@ export function FeaturedProducts() {
       setIsLoading(true);
       try {
         const response = await api.getProducts({ limit: 16 });
-        const list = response.products && response.products.length > 0 ? response.products : SAMPLE_BOOKS;
+        const list = response.products && response.products.length > 0 ? (response.products as Book[]) : (SAMPLE_BOOKS as unknown as Book[]);
         setProducts(list);
       } catch (error) {
         console.error("Failed to load products:", error);
-        setProducts(SAMPLE_BOOKS);
+        setProducts(SAMPLE_BOOKS as unknown as Book[]);
       } finally {
         setIsLoading(false);
       }
@@ -37,13 +38,13 @@ export function FeaturedProducts() {
     { id: "bestseller", label: "🔥 National Bestsellers" },
   ];
 
-  const filteredProducts = products.filter((p: any) => {
+  const filteredProducts = products.filter((p) => {
     if (activeCategory === "all") return true;
     const catStr = (p.categories || []).join(" ").toLowerCase() + " " + (p.title || "").toLowerCase();
     if (activeCategory === "islamic") return catStr.includes("islamic") || catStr.includes("hadith") || catStr.includes("quran") || catStr.includes("sajid") || catStr.includes("makhtum");
     if (activeCategory === "bengali") return catStr.includes("bengali") || catStr.includes("humayun") || catStr.includes("zafar") || catStr.includes("literature") || catStr.includes("devi") || catStr.includes("jochhona");
     if (activeCategory === "tech") return catStr.includes("technology") || catStr.includes("algorithm") || catStr.includes("architecture") || catStr.includes("data") || catStr.includes("learning");
-    if (activeCategory === "bestseller") return catStr.includes("habits") || catStr.includes("sapiens") || catStr.includes("alchemist") || catStr.includes("sajid");
+    if (activeCategory === "bestseller") return catStr.includes("habits") || catStr.includes("sapiens") || catStr.includes("alchemist") || catStr.includes("sajid") || p.is_bestseller;
     return true;
   });
 
@@ -60,62 +61,63 @@ export function FeaturedProducts() {
           </h2>
         </div>
 
-        <Button variant="outline" size="sm" asChild className="self-start sm:self-auto font-bold border-primary/30">
-          <Link href="/books" className="gap-1.5">
-            View Full Catalog ({products.length}) <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </Button>
+        <Link
+          href="/books"
+          className="text-xs sm:text-sm font-bold text-primary hover:underline flex items-center gap-1 self-start sm:self-auto"
+        >
+          View Full Catalog ({products.length > 0 ? products.length : 28}+ Titles) <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
 
-      {/* Category Pills */}
+      {/* Category Pills Navigation */}
       <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none">
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            type="button"
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-              activeCategory === cat.id
-                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-102"
-                : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border"
-            }`}
-          >
-            {cat.label}
-          </button>
-        ))}
+        {categories.map((cat) => {
+          const isActive = activeCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setActiveCategory(cat.id)}
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap active:scale-95 cursor-pointer ${
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 ring-2 ring-primary/30"
+                  : "bg-muted/70 text-muted-foreground hover:bg-muted hover:text-foreground border border-transparent"
+              }`}
+            >
+              {cat.label}
+            </button>
+          );
+        })}
       </div>
 
+      {/* Product Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
-            <div key={i} className="aspect-[3/4] rounded-2xl bg-muted/60 animate-pulse border" />
+            <div key={i} className="aspect-[3/4] rounded-2xl bg-muted animate-pulse" />
           ))}
         </div>
-      ) : filteredProducts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredProducts.slice(0, 12).map((product) => {
-            const firstVariant = product.variants?.[0];
-            return (
-              <ProductCard
-                key={product.id}
-                id={product.id}
-                title={product.title}
-                handle={product.handle}
-                thumbnail={product.thumbnail}
-                price={firstVariant?.price || product.price || 0}
-                publisher={product.publisher}
-                variantId={firstVariant?.id || product.variant_id}
-              />
-            );
-          })}
+      ) : filteredProducts.length === 0 ? (
+        <div className="text-center py-16 border rounded-2xl bg-muted/20">
+          <BookOpen className="h-10 w-10 text-muted-foreground/40 mx-auto mb-3" />
+          <h3 className="font-bold text-base">No titles match this filter</h3>
+          <p className="text-xs text-muted-foreground mt-1">
+            Try switching to another category or browse all books.
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setActiveCategory("all")}
+            className="mt-4 rounded-xl text-xs"
+          >
+            Reset Filters
+          </Button>
         </div>
       ) : (
-        <div className="text-center py-16 p-8 rounded-3xl border bg-card space-y-3">
-          <BookOpen className="h-10 w-10 text-muted-foreground mx-auto" />
-          <p className="text-base font-bold">No books in this category currently</p>
-          <Button size="sm" onClick={() => setActiveCategory("all")}>
-            View All Titles
-          </Button>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       )}
     </section>

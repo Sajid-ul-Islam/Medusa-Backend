@@ -13,9 +13,20 @@ import {
   HeartHandshake,
   CheckCircle2,
   Gift,
+  Download,
+  Flame,
+  Feather,
 } from "lucide-react";
 
 export default function Home() {
+  const trendingSearches = [
+    { label: "Paradoxical Sajid", query: "sajid" },
+    { label: "Data Intensive Apps", query: "data-intensive" },
+    { label: "Ar-Raheeq Al-Makhtum", query: "makhtum" },
+    { label: "Clean Architecture", query: "architecture" },
+    { label: "Humayun Ahmed", query: "humayun" },
+  ];
+
   return (
     <div className="flex flex-col">
       {/* Modern Hero Section with Mesh Gradient & Live Search */}
@@ -36,139 +47,153 @@ export default function Home() {
             <span className="text-primary bg-clip-text">Independent Publishers</span>
           </h1>
 
-          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
             Your premier bookstore for authentic physical paperbacks and instant DRM-protected digital eBooks with nationwide Pathao delivery and bKash checkout.
           </p>
 
-          {/* Hero Live Search Form */}
+          {/* Hero Live Search Form with Hotkey Pill */}
           <form
             action="/books"
             method="GET"
-            className="max-w-xl mx-auto flex items-center bg-card border rounded-2xl p-1.5 shadow-xl shadow-primary/5 focus-within:ring-2 focus-within:ring-primary/20 transition-all"
+            className="max-w-xl mx-auto flex items-center bg-card border rounded-2xl p-1.5 shadow-xl shadow-primary/5 focus-within:ring-2 focus-within:ring-primary/25 transition-all"
           >
-            <div className="pl-3 text-muted-foreground">
+            <div className="pl-3.5 text-muted-foreground">
               <Search className="h-5 w-5" />
             </div>
             <input
               type="text"
               name="q"
-              placeholder="Search by book title, author, Islamic Hadith, or ISBN..."
+              placeholder="Search by title, author, Islamic Hadith, or ISBN..."
               className="flex-1 h-11 px-3 bg-transparent text-sm focus:outline-none text-foreground placeholder:text-muted-foreground/70"
             />
-            <Button type="submit" className="h-10 px-5 text-xs font-bold rounded-xl gap-1.5 shadow-xs">
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-1 text-[10px] font-mono font-bold text-muted-foreground bg-muted rounded-lg mr-2 border">
+              ⌘K
+            </kbd>
+            <Button type="submit" className="h-10 px-5 text-xs font-bold rounded-xl gap-1.5 shadow-xs active:scale-95">
               Search
             </Button>
           </form>
 
-          {/* Popular Search Keyword Chips */}
-          <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground pt-1">
-            <span className="font-semibold text-foreground/80">Trending:</span>
-            {[
-              { label: "প্যারাডক্সিক্যাল সাজিদ", query: "sajid" },
-              { label: "হুমায়ূন আহমেদ", query: "humayun" },
-              { label: "Clean Code", query: "clean" },
-              { label: "Algorithms", query: "algorithms" },
-              { label: "সীরাত ও হাদীস", query: "hadith" },
-            ].map((chip) => (
+          {/* Trending Searches Chips */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs">
+            <span className="text-muted-foreground font-semibold flex items-center gap-1">
+              <Flame className="h-3.5 w-3.5 text-red-500 animate-flame" /> Trending:
+            </span>
+            {trendingSearches.map((item) => (
               <Link
-                key={chip.label}
-                href={`/books?q=${encodeURIComponent(chip.query)}`}
-                className="px-2.5 py-1 rounded-lg bg-muted/40 hover:bg-primary/10 hover:text-primary border text-[11px] font-medium transition"
+                key={item.query}
+                href={`/books?q=${encodeURIComponent(item.query)}`}
+                className="px-2.5 py-1 rounded-full bg-muted/80 hover:bg-primary/10 hover:text-primary transition text-muted-foreground font-medium text-[11px] border border-transparent hover:border-primary/20"
               >
-                {chip.label}
+                {item.label}
               </Link>
             ))}
           </div>
 
-          {/* Trust Metrics Social Proof Ribbon */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-border/50 max-w-3xl mx-auto text-xs">
-            <div className="p-2.5 rounded-xl bg-card border">
-              <div className="font-black text-base text-primary">15+</div>
-              <div className="text-muted-foreground text-[11px]">Verified Publishers</div>
+          {/* Social Proof & Trust Metrics Ribbon */}
+          <div className="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto text-center border-t border-border/60">
+            <div className="p-3">
+              <div className="text-2xl sm:text-3xl font-black text-foreground">15+</div>
+              <div className="text-xs text-muted-foreground font-medium mt-0.5">Publishing Houses</div>
             </div>
-            <div className="p-2.5 rounded-xl bg-card border">
-              <div className="font-black text-base text-emerald-600">85%</div>
-              <div className="text-muted-foreground text-[11px]">Publisher Royalty</div>
+            <div className="p-3">
+              <div className="text-2xl sm:text-3xl font-black text-foreground">1,200+</div>
+              <div className="text-xs text-muted-foreground font-medium mt-0.5">Authentic Titles</div>
             </div>
-            <div className="p-2.5 rounded-xl bg-card border">
-              <div className="font-black text-base text-amber-500">64</div>
-              <div className="text-muted-foreground text-[11px]">Districts Covered</div>
+            <div className="p-3">
+              <div className="text-2xl sm:text-3xl font-black text-foreground">24-48h</div>
+              <div className="text-xs text-muted-foreground font-medium mt-0.5">Pathao Express BD</div>
             </div>
-            <div className="p-2.5 rounded-xl bg-card border">
-              <div className="font-black text-base text-pink-600">100%</div>
-              <div className="text-muted-foreground text-[11px]">Genuine Prints</div>
+            <div className="p-3">
+              <div className="text-2xl sm:text-3xl font-black text-foreground">100%</div>
+              <div className="text-xs text-muted-foreground font-medium mt-0.5">Anti-Piracy Watermark</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured Products with Category Tabs */}
+      {/* Curated Products Catalog */}
       <FeaturedProducts />
 
-      {/* Verified Publishers Carousel / Grid */}
+      {/* Certified Publishers Section */}
       <FeaturedPublishers />
 
-      {/* Why Choose BookHub Value Proposition */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-black">Built for Readers &amp; Authors</h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            A sustainable marketplace connecting independent book creators directly with passionate readers.
-          </p>
+      {/* Value Propositions / Trust Grid */}
+      <section className="container mx-auto px-4 py-20">
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-primary">
+            Why Readers Love BookHub
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+            The Marketplace Built for Book Lovers
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl border bg-card hover:shadow-md transition space-y-3">
-            <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl">
-              <BookOpen className="h-6 w-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="p-6 rounded-3xl border bg-card/60 backdrop-blur-xs shadow-xs hover:border-primary/40 transition group">
+            <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Truck className="h-6 w-6" />
             </div>
-            <h3 className="font-bold text-base">In-Browser Instant eBook Reader</h3>
+            <h3 className="font-bold text-base mb-1">Nationwide Fast Delivery</h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Read digital purchases immediately in your browser with distraction-free Sepia and Dark modes without installing heavy apps.
+              Doorstep delivery across all 64 districts in Bangladesh via Pathao &amp; Steadfast express logistics.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl border bg-card hover:shadow-md transition space-y-3">
-            <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-xl">
-              <ShieldCheck className="h-6 w-6" />
+          <div className="p-6 rounded-3xl border bg-card/60 backdrop-blur-xs shadow-xs hover:border-primary/40 transition group">
+            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <Download className="h-6 w-6" />
             </div>
-            <h3 className="font-bold text-base">Dynamic Anti-Piracy DRM Protection</h3>
+            <h3 className="font-bold text-base mb-1">Dynamic DRM Watermark</h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Every digital purchase is dynamically stamped with purchaser license hashes, protecting publisher intellectual property.
+              Read digital eBooks instantly on any device with personalized anti-piracy buyer stamping.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl border bg-card hover:shadow-md transition space-y-3">
-            <div className="h-12 w-12 rounded-xl bg-pink-500/10 text-pink-600 flex items-center justify-center text-xl">
+          <div className="p-6 rounded-3xl border bg-card/60 backdrop-blur-xs shadow-xs hover:border-primary/40 transition group">
+            <div className="h-12 w-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
               <Gift className="h-6 w-6" />
             </div>
-            <h3 className="font-bold text-base">Gift Wrapping &amp; Book Requests</h3>
+            <h3 className="font-bold text-base mb-1">Gift Wrapping &amp; Note</h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Send books as gifts with luxury ribbon wrapping and custom greeting notes, or request rare out-of-print books directly.
+              Send beautifully wrapped books with custom handwritten greeting cards for birthdays and Boi Mela gifts.
+            </p>
+          </div>
+
+          <div className="p-6 rounded-3xl border bg-card/60 backdrop-blur-xs shadow-xs hover:border-primary/40 transition group">
+            <div className="h-12 w-12 rounded-2xl bg-purple-500/10 text-purple-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <ShieldCheck className="h-6 w-6" />
+            </div>
+            <h3 className="font-bold text-base mb-1">Direct from Publishers</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              100% genuine copies direct from authentic publishing houses. Zero counterfeit or pirated prints.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Publisher CTA Banner */}
-      <section className="container mx-auto px-4 pb-16">
-        <div className="rounded-3xl bg-gradient-to-r from-primary via-primary/90 to-amber-700 text-primary-foreground p-8 sm:p-12 relative overflow-hidden shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 text-center md:text-left">
-            <span className="text-xs uppercase font-black tracking-wider bg-white/20 px-3 py-1 rounded-full inline-block">
-              For Publishing Houses &amp; Writers
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-black">Publish on BookHub Today</h2>
-            <p className="text-xs sm:text-sm text-primary-foreground/90 max-w-lg">
-              Set up your bookstore in 2 minutes, upload 500 books via Excel/CSV, and earn an industry-leading 85% revenue royalty.
-            </p>
+      {/* Call to Action for Indie Authors & Publishers */}
+      <section className="bg-primary text-primary-foreground py-16">
+        <div className="container mx-auto px-4 text-center max-w-3xl space-y-6">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-white text-xs font-bold uppercase tracking-wider">
+            <Feather className="h-3.5 w-3.5" /> For Independent Writers &amp; Publishers
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
-            <Button size="lg" variant="secondary" className="font-bold shadow-md" asChild>
-              <Link href="/publisher/register">Open Your Bookstore →</Link>
+          <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-tight">
+            Launch Your Independent Bookstore in Minutes
+          </h2>
+          <p className="text-sm sm:text-base text-primary-foreground/90 max-w-xl mx-auto leading-relaxed">
+            Get your own branded subdomain, automated Pathao shipping labels, bKash merchant payouts, and eBook DRM protection with zero upfront setup fees.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg" variant="secondary" className="font-bold rounded-xl text-xs sm:text-sm shadow-xl active:scale-95">
+              <Link href="/publisher/register">
+                Open Publisher Store <ArrowRight className="h-4 w-4 ml-1.5" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="font-bold bg-white/10 border-white/30 hover:bg-white/20 text-white" asChild>
-              <Link href="/publisher/dashboard">Publisher Sign In</Link>
+            <Button asChild size="lg" variant="outline" className="bg-transparent text-white border-white/40 hover:bg-white/10 font-bold rounded-xl text-xs sm:text-sm active:scale-95">
+              <Link href="/publisher/dashboard">
+                Explore Demo Dashboard
+              </Link>
             </Button>
           </div>
         </div>

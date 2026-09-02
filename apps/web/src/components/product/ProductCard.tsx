@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/components/ui/toast";
-import { Heart, Sparkles, Feather, ShoppingBag } from "lucide-react";
+import { Heart, Sparkles, Feather, ShoppingBag, BookOpen, Download } from "lucide-react";
 import { formatPrice, safeGetStorage, safeSetStorage } from "@/lib/utils";
 import { Book } from "@/types";
 
@@ -35,10 +35,12 @@ export function ProductCard(props: ProductCardProps) {
   const price = product ? (product.variants?.[0]?.price || 0) : (props.price || 0);
   const publisher = product?.publisher || props.publisher;
   const variantId = product ? (product.variants?.[0]?.id || product.id) : (props.variantId || id);
+  const isDigital = product?.is_digital || product?.variants?.some((v) => v.format === "Digital");
 
   const { addToCart, isLoading } = useCart();
   const { success, info, error: toastError } = useToast();
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [isBouncing, setIsBouncing] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -53,6 +55,8 @@ export function ProductCard(props: ProductCardProps) {
     e.stopPropagation();
 
     let list = safeGetStorage<string[]>("bookhub_wishlist", []);
+    setIsBouncing(true);
+    setTimeout(() => setIsBouncing(false), 400);
 
     if (isWishlisted) {
       list = list.filter((item) => item !== id);
@@ -61,7 +65,7 @@ export function ProductCard(props: ProductCardProps) {
     } else {
       list.push(id);
       setIsWishlisted(true);
-      success(`Saved "${title}" to your personal bookshelf wishlist!`, "Added to Wishlist");
+      success(`Saved "${title}" to your personal bookshelf!`, "Added to Wishlist");
     }
 
     safeSetStorage("bookhub_wishlist", list);
@@ -72,7 +76,7 @@ export function ProductCard(props: ProductCardProps) {
     e.stopPropagation();
     try {
       await addToCart(variantId || id, 1);
-      success(`Added "${title}" to your bag.`, "Added to Cart");
+      success(`Added "${title}" to your bag.`, "Added to Bag");
     } catch (err) {
       toastError("Could not add book to bag.");
     }
@@ -81,10 +85,10 @@ export function ProductCard(props: ProductCardProps) {
   return (
     <Link
       href={`/books/${handle}`}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/25 active:scale-[0.99]"
     >
-      {/* Book Cover Container */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted/60 flex items-center justify-center">
+      {/* 3D Realistic Book Cover Container */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted/60 flex items-center justify-center book-cover-depth">
         {thumbnail ? (
           <Image
             src={thumbnail}
@@ -100,10 +104,15 @@ export function ProductCard(props: ProductCardProps) {
         )}
 
         {/* Badges Overlay */}
-        <div className="absolute top-2 left-2 flex flex-col gap-1 z-10">
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5 z-10">
+          {product?.is_bestseller && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-red-600/95 backdrop-blur-md px-2 py-0.5 text-[9px] font-black text-white uppercase tracking-wider shadow-sm">
+              🔥 Bestseller
+            </span>
+          )}
           {isSigned && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/90 backdrop-blur-md px-2.5 py-0.5 text-[10px] font-extrabold text-white shadow-sm">
-              <Feather className="h-3 w-3" /> Signed Copy
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/95 backdrop-blur-md px-2 py-0.5 text-[9px] font-black text-white uppercase tracking-wider shadow-sm">
+              <Feather className="h-2.5 w-2.5" /> Signed
             </span>
           )}
         </div>
@@ -113,23 +122,23 @@ export function ProductCard(props: ProductCardProps) {
           type="button"
           onClick={toggleWishlist}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className={`absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-md transition-all duration-200 z-10 ${
+          className={`absolute top-2.5 right-2.5 flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-md transition-all duration-200 z-10 active:scale-90 ${
             isWishlisted
-              ? "bg-red-500/90 text-white scale-110 shadow-md"
-              : "bg-background/80 text-muted-foreground hover:bg-background hover:text-red-500 hover:scale-105"
-          }`}
+              ? "bg-red-500 text-white shadow-md scale-105"
+              : "bg-background/80 text-muted-foreground hover:bg-background hover:text-red-500 hover:scale-110 shadow-xs"
+          } ${isBouncing ? "animate-heart-bounce" : ""}`}
         >
           <Heart className={`h-4 w-4 ${isWishlisted ? "fill-current" : ""}`} />
         </button>
 
         {/* Quick Add Overlay on Hover */}
-        <div className="absolute inset-x-2 bottom-2 opacity-0 translate-y-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 z-10 hidden sm:block">
+        <div className="absolute inset-x-2.5 bottom-2.5 opacity-0 translate-y-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 z-10 hidden sm:block">
           <Button
             type="button"
             size="sm"
             onClick={handleQuickAdd}
             disabled={isLoading}
-            className="w-full rounded-xl text-xs font-bold gap-1.5 shadow-lg shadow-primary/25"
+            className="w-full h-9 rounded-xl text-xs font-bold gap-1.5 shadow-lg shadow-primary/25 active:scale-95"
           >
             <ShoppingBag className="h-3.5 w-3.5" /> Quick Add
           </Button>
@@ -140,7 +149,7 @@ export function ProductCard(props: ProductCardProps) {
       <div className="flex flex-1 flex-col justify-between p-4 space-y-2">
         <div>
           {publisher && (
-            <span className="text-[11px] font-bold text-primary truncate block uppercase tracking-wider">
+            <span className="text-[10px] font-extrabold text-primary truncate block uppercase tracking-wider mb-0.5">
               {publisher.name}
             </span>
           )}
@@ -151,12 +160,21 @@ export function ProductCard(props: ProductCardProps) {
 
         <div className="pt-2 border-t flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-[10px] text-muted-foreground uppercase font-semibold">Price</span>
+            <span className="text-[9px] text-muted-foreground uppercase font-semibold">Price</span>
             <span className="text-sm font-black text-foreground">{formatPrice(price)}</span>
           </div>
-          <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-            In Stock
-          </span>
+
+          <div className="flex items-center gap-1 text-[10px] font-bold text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-full">
+            {isDigital ? (
+              <span className="flex items-center gap-0.5 text-blue-600 dark:text-blue-400">
+                <Download className="h-3 w-3" /> eBook
+              </span>
+            ) : (
+              <span className="flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400">
+                <BookOpen className="h-3 w-3" /> Print
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Link>

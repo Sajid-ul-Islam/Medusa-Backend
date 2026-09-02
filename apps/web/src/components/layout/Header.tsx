@@ -15,6 +15,7 @@ import {
   User,
   ChevronDown,
   LogIn,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
@@ -29,6 +30,7 @@ export function Header() {
   const { user, displayName, avatarUrl, email, isLoading: authLoading, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const itemCount =
@@ -48,6 +50,18 @@ export function Header() {
     await signOut();
     router.push("/");
   };
+
+  // Keyboard shortcut listener: Cmd/Ctrl + K or / to focus search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -73,53 +87,59 @@ export function Header() {
     : "U";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/70 transition-colors">
       <div className="container flex h-16 items-center justify-between px-4 mx-auto gap-4">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-          <BookOpen className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold tracking-tight">BookHub</span>
+        <Link href="/" className="flex items-center space-x-2 flex-shrink-0 group">
+          <div className="h-9 w-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+            <BookOpen className="h-5 w-5 text-primary" />
+          </div>
+          <span className="text-xl font-black tracking-tight text-foreground">BookHub</span>
         </Link>
 
-        {/* Search Bar */}
+        {/* Search Bar with Hotkey */}
         <form
           onSubmit={handleSearchSubmit}
           className="hidden md:flex flex-1 max-w-md relative items-center"
         >
-          <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3.5 h-4 w-4 text-muted-foreground" />
           <input
+            ref={searchInputRef}
             type="text"
             placeholder="Search books by title, author, or ISBN..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-9 pl-9 pr-3 rounded-full border bg-muted/40 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+            className="w-full h-9 pl-9 pr-12 rounded-full border bg-muted/50 text-xs focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary transition-all text-foreground"
           />
+          <kbd className="absolute right-3 px-1.5 py-0.5 text-[9px] font-mono font-bold text-muted-foreground bg-background rounded border shadow-2xs pointer-events-none">
+            ⌘K
+          </kbd>
         </form>
 
         {/* Navigation Links */}
         <nav className="hidden lg:flex items-center space-x-6">
           <Link
             href="/books"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
           >
             Browse Books
           </Link>
           <Link
             href="/publishers"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
           >
             Publishers
           </Link>
           <Link
             href="/request-book"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+            className="text-xs font-bold text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
           >
             <BookOpen className="h-3.5 w-3.5" />
             Request a Book
           </Link>
           <Link
             href="/publisher/register"
-            className="text-sm font-medium text-primary hover:underline transition-colors flex items-center gap-1"
+            className="text-xs font-bold text-primary hover:underline transition-colors flex items-center gap-1"
           >
             <UserPlus className="h-3.5 w-3.5" />
             Become a Publisher
@@ -132,14 +152,14 @@ export function Header() {
           <button
             type="button"
             onClick={claimDailyStreakBonus}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full border bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-bold hover:bg-amber-500/20 transition cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400 text-xs font-bold hover:bg-amber-500/20 active:scale-95 transition cursor-pointer shadow-2xs"
             title={hasClaimedToday ? `Daily Streak: ${streakDays} Days active!` : "Click to claim +25 Daily Reading Coins!"}
           >
             <Coins className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
             <span>{coins}</span>
             <span className="text-muted-foreground">|</span>
             <span className="flex items-center text-[11px] gap-0.5 text-red-500">
-              <Flame className="h-3 w-3 fill-red-500" /> {streakDays}d
+              <Flame className="h-3 w-3 fill-red-500 animate-flame" /> {streakDays}d
             </span>
           </button>
 
@@ -149,12 +169,12 @@ export function Header() {
             variant="ghost"
             size="icon"
             onClick={openDrawer}
-            className="relative"
+            className="relative rounded-xl active:scale-95 transition-transform"
             aria-label="Shopping Cart"
           >
             <ShoppingCart className="h-5 w-5" />
             {itemCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-bold animate-in zoom-in-50">
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground font-bold animate-in zoom-in-50 shadow-sm">
                 {itemCount}
               </span>
             )}
@@ -165,7 +185,7 @@ export function Header() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center gap-1.5 rounded-full border-2 border-transparent hover:border-primary/30 transition-all p-0.5"
+                className="flex items-center gap-1.5 rounded-full border-2 border-transparent hover:border-primary/30 transition-all p-0.5 active:scale-95"
                 aria-label="Account menu"
               >
                 {avatarUrl ? (
@@ -185,10 +205,10 @@ export function Header() {
 
               {/* Dropdown Menu */}
               {isDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-card border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-card border rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                   {/* User Info */}
                   <div className="px-4 py-3 border-b bg-muted/30">
-                    <p className="text-sm font-semibold truncate">
+                    <p className="text-sm font-semibold truncate text-foreground">
                       {displayName || "BookHub Reader"}
                     </p>
                     <p className="text-xs text-muted-foreground truncate">
@@ -201,14 +221,14 @@ export function Header() {
                     <Link
                       href="/publisher/dashboard"
                       onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted/60 transition-colors"
+                      className="flex items-center gap-3 px-4 py-2.5 text-xs font-semibold hover:bg-muted/60 transition-colors"
                     >
                       <Store className="h-4 w-4 text-muted-foreground" />
                       Publisher Portal
                     </Link>
                     <button
                       onClick={handleSignOut}
-                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-destructive/10 text-destructive transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-semibold hover:bg-destructive/10 text-destructive transition-colors"
                     >
                       <LogOut className="h-4 w-4" />
                       Sign Out
@@ -218,7 +238,7 @@ export function Header() {
               )}
             </div>
           ) : !authLoading ? (
-            <Button asChild size="sm" variant="outline">
+            <Button asChild size="sm" variant="outline" className="rounded-xl text-xs font-bold active:scale-95">
               <Link href="/login" className="flex items-center gap-1.5">
                 <LogIn className="h-4 w-4" />
                 <span className="hidden sm:inline">Sign In</span>
@@ -226,7 +246,7 @@ export function Header() {
             </Button>
           ) : null}
 
-          <Button asChild size="sm" className="hidden lg:flex">
+          <Button asChild size="sm" className="hidden lg:flex rounded-xl font-bold text-xs shadow-xs active:scale-95">
             <Link href="/publisher/dashboard">
               <Store className="mr-1.5 h-4 w-4" />
               Publisher Portal
