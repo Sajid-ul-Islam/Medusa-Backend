@@ -7,6 +7,7 @@ import { useCart } from "@/context/CartContext";
 import { api, getCartId } from "@/lib/medusa";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import { useAuth } from "@/context/AuthContext";
 import {
   ShieldCheck,
   CheckCircle2,
@@ -23,6 +24,11 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { cart, clearCart, isInitialized } = useCart();
   const { success, error: toastError } = useToast();
+  const { user, displayName, email: authEmail } = useAuth();
+
+  // Extract first/last name from OAuth profile
+  const authFirstName = displayName ? displayName.split(" ")[0] : "";
+  const authLastName = displayName ? displayName.split(" ").slice(1).join(" ") : "";
 
   const [paymentMethod, setPaymentMethod] = useState<"bkash" | "nagad" | "sslcommerz" | "cod">("bkash");
   const [bkashNumber, setBkashNumber] = useState("01712345678");
@@ -32,9 +38,9 @@ export default function CheckoutPage() {
   const [selectedCardGateway, setSelectedCardGateway] = useState<"visa_master" | "dbbl_nexus" | "city_bank">("visa_master");
 
   const [formData, setFormData] = useState({
-    email: "customer@example.com",
-    firstName: "Rahim",
-    lastName: "Chowdhury",
+    email: authEmail || "customer@example.com",
+    firstName: authFirstName || "Rahim",
+    lastName: authLastName || "Chowdhury",
     address: "House 42, Road 11, Banani",
     apartment: "Apt 4B",
     city: "Dhaka",

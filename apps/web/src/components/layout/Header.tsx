@@ -1,19 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingCart, BookOpen, Store, Search, UserPlus, Coins, Flame } from "lucide-react";
+import {
+  ShoppingCart,
+  BookOpen,
+  Store,
+  Search,
+  UserPlus,
+  Coins,
+  Flame,
+  LogOut,
+  User,
+  ChevronDown,
+  LogIn,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useRewards } from "@/context/RewardsContext";
+import { useAuth } from "@/context/AuthContext";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 
 export function Header() {
   const router = useRouter();
   const { cart, isInitialized, openDrawer } = useCart();
   const { coins, streakDays, claimDailyStreakBonus, hasClaimedToday } = useRewards();
+  const { user, displayName, avatarUrl, email, isLoading: authLoading, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const itemCount =
     isInitialized && cart?.items
@@ -26,6 +42,35 @@ export function Header() {
       router.push(`/books?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
+
+  const handleSignOut = async () => {
+    setIsDropdownOpen(false);
+    await signOut();
+    router.push("/");
+  };
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Get initials for fallback avatar
+  const initials = displayName
+    ? displayName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : email
+    ? email[0].toUpperCase()
+    : "U";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -81,7 +126,7 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Action Buttons, Theme Switcher, Rewards & Cart */}
+        {/* Action Buttons, Theme Switcher, Auth & Cart */}
         <div className="flex items-center space-x-2.5">
           {/* Rewards & Daily Streak Pill */}
           <button
@@ -115,7 +160,73 @@ export function Header() {
             )}
           </Button>
 
-          <Button asChild size="sm">
+          {/* Auth: User Avatar Dropdown or Sign-In Button */}
+          {!authLoading && user ? (
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-1.5 rounded-full border-2 border-transparent hover:border-primary/30 transition-all p-0.5"
+                aria-label="Account menu"
+              >
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={displayName || "User"}
+                    className="h-8 w-8 rounded-full object-cover ring-2 ring-primary/20"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold ring-2 ring-primary/20">
+                    {initials}
+                  </div>
+                )}
+                <ChevronDown className="h-3 w-3 text-muted-foreground hidden sm:block" />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-64 bg-card border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  {/* User Info */}
+                  <div className="px-4 py-3 border-b bg-muted/30">
+                    <p className="text-sm font-semibold truncate">
+                      {displayName || "BookHub Reader"}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {email}
+                    </p>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="py-1">
+                    <Link
+                      href="/publisher/dashboard"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-muted/60 transition-colors"
+                    >
+                      <Store className="h-4 w-4 text-muted-foreground" />
+                      Publisher Portal
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-destructive/10 text-destructive transition-colors"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : !authLoading ? (
+            <Button asChild size="sm" variant="outline">
+              <Link href="/login" className="flex items-center gap-1.5">
+                <LogIn className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign In</span>
+              </Link>
+            </Button>
+          ) : null}
+
+          <Button asChild size="sm" className="hidden lg:flex">
             <Link href="/publisher/dashboard">
               <Store className="mr-1.5 h-4 w-4" />
               Publisher Portal
